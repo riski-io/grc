@@ -1,0 +1,37 @@
+<ul>
+  {{#if AuditHistory.changes.title}}
+  <li>
+    <strong>Title</strong>: {{{AuditHistory.changes.title}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.status}}
+  <li>
+    <strong>Status</strong>: {{{AuditHistory.changes.status}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.responsibleOrg}}
+  <li>
+    <strong>Org Unit</strong>: {{{AuditHistory.changes.responsibleOrg}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.reviewType}}
+  <li>
+    <strong>Review Type</strong>: {{{AuditHistory.changes.reviewType}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.description}}
+  <li>
+    <strong>Description</strong>: {{{AuditHistory.changes.description}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.participantList}}
+  <li>
+    <strong>Participants</strong>
+    <ul>
+      {{#each AuditHistory.changes.participantList}}
+        <li>{{{givenName}}} {{{familyName}}}</li>
+      {{/each}}
+    </ul>
+  </li>
+  {{/if}}
+</ul>

@@ -1,0 +1,135 @@
+<div class="modal fade" id="heirarchy">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4> </div>
+      <div class="modal-body">
+        <div ui-tree="options" data-drag-enabled="false">
+          <ol ui-tree-nodes ng-model="orgTree">
+            <li ng-repeat="item in orgTree" ui-tree-node ng-include="'app/tree.html'" collapsed="true"></li>
+          </ol>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <div class="pull-right noprint m-t-md">
+        <a class="btn btn-xs btn-primary" ui-sref="action-item.new" ng-if="rolePermissions.action_item.create"><i class="fa fa-plus"></i> add new</a>
+      </div>
+    <h2 >List of Action Items</h2>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="ibox float-e-margins">
+    <div class="ibox-content">
+      <div class="wrapper wrapper-content" ng-show="isLoading">
+        <div class="text-center">
+          <h2>Loading action items....</h2>
+          <div class="block-spinner"></div>
+        </div>
+      </div>
+      <div ng-hide="isLoading">
+        <div class="well">
+          Please choose an organisation unit by clicking on the organisation unit name and select to see all actions items for your chosen unit. Optionally you can show all action items in the organisation unit hierarchy by checking the "include children" box. You can only see results for the org units for which you are a mamber.
+        </div>
+        <div class="form-inline">
+          <div class="form-group">
+            <label for="orgUnit"><h2>
+              Show results for <a class="underline" data-toggle="modal" data-target="#heirarchy">{{orgUnit.orgName}}</a>
+            </h2> </label>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-control m-t-xs ml20"> <input type="checkbox" ng-model="includeChildren" ng-change="updateSearchResults(null, true)"/>
+              <span> Include children</span>
+            </label>
+          </div>
+        </div>
+        <hr class="m-t-xs">
+        <div class="row facet-filter">
+          <div class="col-sm-4">
+            <h5>Prioirty</h5>
+            <ul  class="folder-list m-b-md">
+              <li ng-repeat="priority in facets.priority.buckets"><label class="checkbox-control"><input type="checkbox" ng-model="priority.checked"><span>{{priority.value}}</span></label></li>
+            </ul>
+          </div>
+          <div class="col-sm-4">
+            <h5>Status</h5>
+            <ul  class="folder-list m-b-md">
+              <li ng-repeat="status in facets.status.buckets"><label class="checkbox-control"><input type="checkbox" ng-model="status.checked"><span>{{status.value}}</span></label></li>
+            </ul>
+          </div>
+          <div class="col-sm-4">
+            <h5>Review Type</h5>
+            <ul  class="folder-list m-b-md">
+              <li ng-repeat="reviewtype in facets.reviewtype.buckets"><label class="checkbox-control"><input type="checkbox" ng-model="reviewtype.checked"><span>{{reviewtype.value}}</span></label></li>
+            </ul>
+          </div>
+          <div class="col-sm-12">
+            <button class="btn btn-primary pull-right" ng-click="updateSearchResults(null, false)">Apply</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 dataTables_custom_length">
+            <label>
+              <span>Show</span>
+              <select class="form-control input-sm" ng-model="noOfRows" ng-change="refreshItemsPerPage(noOfRows, false)">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">All</option>
+              </select> <span>entries</span></label>
+          </div>
+          <div class="col-md-8">
+            <div class="export-tools btn-group">
+              <a class="btn btn-default btn-white" download-pdf="result.hits.hits" type="action-item" org-unit="orgUnit"><i class="fa fa-file-pdf-o"></i> <span>Save as PDF file</span></a>
+              <a class="btn btn-default btn-white" ng-click="exportAsCSV()"><i class="fa fa-file-excel-o"></i> <span>Save as CSV file</span></a>
+              <a class="btn btn-default btn-white" title="View print view"  print-table><i class="fa fa-print"></i> <span>Print table</span></a>
+            </div>
+          </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover table-custom" datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Due Date</th>
+              <th>Created By</th>
+              <th>Assigned To</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="linked-row" ng-repeat="item in result.hits.hits" ng-click="goToActionItem(item._source.id)">
+              <td class="text-nowrap">{{item._source.ID}}</td>
+              <td>{{item._source.TITLE}}</td>
+              <td>{{item._source.STATUS}}</td>
+              <td>{{item._source.PRIORITY}}</td>
+              <td>{{item._source.DUE_DATE  | date : 'dd-MMM-yyyy'}}</td>
+              <td>{{item._source.CREATED_BY_USER_NAME}}</td>
+              <td>{{item._source.ASSIGNED_USER_NAME}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="row">
+          <div class="col-md-4">
+            <p class="mt20" ng-if="result.hits.total > 0">Showing {{data.currentPage*itemsPerPage}} to {{(data.currentPage*itemsPerPage + itemsPerPage) > result.hits.total ? result.hits.total :  (data.currentPage*itemsPerPage + itemsPerPage)}} of {{result.hits.total}} entries</p>
+          </div>
+          <div class="col-md-8">
+              <uib-pagination  class="pagination pull-right" total-items="result.hits.total" items-per-page="itemsPerPage" ng-model="data.currentPage" max-size="10" rotate="true" ng-change="getResults(false)"></uib-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

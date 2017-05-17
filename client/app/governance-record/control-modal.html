@@ -1,0 +1,95 @@
+<div class="inmodal">
+    <div class="modal-header">
+        <h4 class="modal-title">Create New Control</h4>
+    </div>
+    <div class="modal-body">
+      <ng-form name="controlForm" ng-submit="saveControl(controlForm)" novalidate>
+        <div class="form-horizontal">
+          <div class="form-group">
+            <div class="col-sm-12" ng-class="{ 'has-error': controlSubmitted && controlForm.controlTitle.$error.required }">
+              <label for="controlTitle">Control Title</label>
+              <input type="text" name="controlTitle" id="controlTitle" ng-model="control.title" placeholder="Control Title" class="form-control" required>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlTitle.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlStatus.$error.required }">
+              <label for="controlStatus">Control Status</label>
+              <select chosen name="controlStatus" id="controlStatus" class="form-control" ng-model="control.status" ng-init="control.status = control.status || 'New'" required ng-options="status as status for status in controlStatuses" data-search="false">
+                <option value=""></option>
+              </select>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlStatus.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlCategory.$error.required }">
+              <label for="controlCategory">Category</label>
+              <select chosen name="controlCategory" id="controlCategory" class="form-control" ng-model="control.category" ng-options="riskCategory.code as riskCategory.code for riskCategory in enums.risk_category" data-search="false" required>
+                <option value=""></option>
+              </select>
+
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlCategory.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlResponsibleOrg.$error.required }">
+              <label for="controlResponsibleOrg">Responsible Organization</label>
+              <select name="controlResponsibleOrg" chosen id="controlResponsibleOrg" class="form-control" ng-model="control.responsibleOrg" ng-options="unit as unit.orgName for unit in orgUnits track by unit.orgUnitId" data-search="false" required>
+                <option value=""></option>
+              </select>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlResponsibleOrg.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlResponsibleUser.$error.required }">
+              <label for="controlResponsibleUser">Responsible User</label>
+              <select chosen class="form-control" required chosen name="controlResponsibleUser" id="controlResponsibleUser" ng-model="control.responsibleUser" ng-options="user as user.display_name for user in users track by user._id" ng-init="control.responsibleUser = control.responsibleUser || currentUser">
+                <option value=""></option>
+              </select>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlResponsibleUser.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-6">
+              <label for="reviewTitle">Tags</label>
+              <input type="text" name="reviewTitle" id="reviewTitle" class="form-control" placeholder="Comma separated control's tags" ng-model="tagString.value" ng-change="setTags()">
+            </div>
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlEffectiveFrom.$error.required }">
+              <label for="controlEffectiveFrom">Effective From</label>
+              <div class="input-group date">
+                <input type="text" name="controlEffectiveFrom" class="form-control" placeholder="dd-MMM-yyyy" id="controlEffectiveFrom" ng-focus="effectiveFromOpened = true" datepicker-popup="dd-MMM-yyyy" ng-model="control.effectiveFrom" is-open="effectiveFromOpened" show-button-bar="false" required/>
+                <span class="input-group-addon" ng-click="effectiveFromOpened=true;$event.stopPropagation();"><i class="fa fa-calendar"></i></span>
+              </div>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlEffectiveFrom.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label for="controlEffectiveTo">Effective To</label>
+              <div class="input-group date">
+                <input type="text" class="form-control" placeholder="dd-MMM-yyyy" id="controlEffectiveTo" ng-focus="effectiveToOpened = true" datepicker-popup="dd-MMM-yyyy" ng-model="control.effectiveTo" is-open="effectiveToOpened" show-button-bar="false"/>
+                <span class="input-group-addon" ng-click="effectiveToOpened=true;$event.stopPropagation();"><i class="fa fa-calendar"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12" ng-class="{ 'has-error': controlSubmitted && controlForm.controlDescription.$error.required }">
+              <label for="reviewTitle">Description</label>
+              <div summernote config="wysiwygConfig" height="100" class="summernote" name="controlDescription" ng-model="control.description" required></div>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlDescription.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-white" ng-click="cancel()">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="saveControl(controlForm.$valid)">Save changes</button>
+    </div>
+</div>

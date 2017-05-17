@@ -1,0 +1,136 @@
+<ul>
+  {{#if AuditHistory.changes.title}}
+  <li>
+    <strong>Title</strong>: {{{AuditHistory.changes.title}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.status}}
+  <li>
+    <strong>Status</strong>: {{{AuditHistory.changes.status}}}
+  </li>
+  {{/if}}  
+  {{#if AuditHistory.changes.description}}
+  <li>
+    <strong>description</strong>: {{{AuditHistory.changes.description}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.responsibleOrg}}
+  <li>
+    <strong>Org. Unit</strong>: {{{AuditHistory.changes.responsibleOrg}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.nominatedReviewer}}
+  <li>
+    <strong>Reviewer</strong>: {{{AuditHistory.changes.nominatedReviewer}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.responsibleUser}}
+  <li>
+    <strong>Resp. Officer</strong>: {{{AuditHistory.changes.responsibleUser}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.identifiedAt}}
+  <li>
+    <strong>Related Review</strong>: {{{AuditHistory.changes.identifiedAt}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.externalFactors}}
+  <li>
+    <strong>External Factors</strong> updates:
+    <table class="table table-striped table-bordered table-history-changes">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th width="25%">Trend</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each AuditHistory.changes.externalFactors}}
+        <tr>
+          <td>
+            {{{description}}}
+          </td>
+          <td>
+            {{{trend}}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.assessment}}
+  <li>
+    <strong>Risk and controls</strong> updates:
+    <table class="table table-bordered table-record-risks table-history-changes">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Category</th>
+          <th></th>
+          <th class="text-center">Impact, $ Millions (AUD)</th>
+          <th class="text-center">Consequence</th>
+          <th class="text-center">Likelihood</th>
+          <th class="rating-column text-center">Rating</th>
+        </tr>
+      </thead>
+      {{#each AuditHistory.changes.assessment}}
+      <tbody>
+        <tr ng-if="initialAssessment">
+          <td rowspan="3">{{math @index '+' 1}}</td>
+          <td rowspan="3">
+            {{{category}}}
+          </td>
+          <th>Initial assessment</th>
+          <td class="text-center">
+            {{{initialAssessment.cost}}}
+          </td>
+          <td class="text-center">
+            {{{initialAssessment.consequence}}}
+          </td>
+          <td class="text-center">
+            {{{initialAssessment.likelihood}}}
+          </td>
+          <td class="text-center">
+            {{{initialAssessment.rating}}}
+          </td>
+        </tr>
+        <tr>
+          <th>Controls</th>
+          <td colspan="4" class="record-controls-row">
+            <table class="table table-bordered table-record-controls">
+              {{#each controls}}
+              <tr ng-repeat="(controlKey, ctrlChange) in controls">
+                <td>
+                  {{{title}}}
+                </td>
+                <td width="30%">
+                  {{{effectiveness}}}
+                </td>
+              </tr>
+              {{/each}}
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <th>Controlled assessment</th>
+          <td class="text-center">
+            {{{controlledAssessment.cost}}}
+          </td>
+          <td class="text-center">
+            {{{controlledAssessment.consequence}}}
+          </td>
+          <td class="text-center">
+            {{{controlledAssessment.likelihood}}}
+          </td>
+          <td class="text-center">
+            {{{controlledAssessment.rating}}}
+          </td>
+        </tr>
+      </tbody>
+      {{/each}}
+    </table>
+  </li>
+  {{/if}}
+</ul>

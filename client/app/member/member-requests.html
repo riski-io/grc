@@ -1,0 +1,38 @@
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2>Pending memebership requests</h2>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <h3 ng-show="!isLoading && !requests.length" class="text-muted">No New Membership Requests</h3>
+            <div class="table-responsive" ng-if="requests.length">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>User</th>
+                      <th>Organisation Unit</th>
+                      <th>Role</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="request in requests">
+                      <th scope="row">{{$index + 1}}</th>
+                      <td>{{request.user.display_name}}</td>
+                      <td>{{request.organisationUnit.orgName}}</td>
+                      <td>{{request.user.role}}</td>
+                      <td>
+                        <button class="btn btn-sm btn-primary" ng-click="approve(request)">Approve</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>          
+        </div>
+    </div>
+</div>

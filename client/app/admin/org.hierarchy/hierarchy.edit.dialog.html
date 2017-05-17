@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="cancel()">&times;</button>
+  <h4 class="modal-title">
+    <span class="fa fa-pencil-square"></span> {{isEdit? 'Edit' : 'Create'}} organization unit
+  </h4>
+</div>
+<form ng-submit="save()" name="orgForm">
+  <div class="modal-body">
+    <div ng-include="'app/alert.html'"></div>
+    <div class="form-group">
+      <label class="control-label" for="value">Organization Code</label>
+      <input id="value" type="text" name="orgCode" ng-model="node.orgCode" class="form-control">
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="value">Organization Name</label>
+      <input id="value" type="text" name="orgName" ng-model="node.orgName" class="form-control" required>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-disabled="orgForm.$invalid">Save</button>
+    <button type="button" class="btn btn-white" ng-click="cancel()">Cancel</button>
+  </div>
+</form>

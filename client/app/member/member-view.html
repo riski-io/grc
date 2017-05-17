@@ -1,0 +1,254 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-12">
+        <h2 class="pull-left">User Record: {{member.display_name}}</h2>
+        <div class="page-actions noprint" ng-hide="isLoading">
+            <i tooltip="Print page" print-page print-element-id="main-content" class="fa fa-print fa-2x act-icon"></i>
+        </div>
+    </div>
+</div>
+<div class="wrapper wrapper-content" ng-show="isLoading">
+    <div class="text-center">
+        <h2>Loading....</h2>
+        <div class="block-spinner"></div>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-hide="isLoading">
+    <div class="ibox">
+        <div class="ibox-content">
+            <div ng-include="'app/alert.html'"></div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <dl class="dl-horizontal">
+                                <dt ng-show="defaultOrgUnit"><strong>Default Org Unit:</strong></dt>
+                                <dd ng-show="defaultOrgUnit">
+                                    <span ng-hide="isEditDefaultOrg">
+                                        {{defaultOrgUnit.orgName}}
+                                        <a href ng-click="isEditDefaultOrg = true" tooltip-placement="bottom" tooltip="Change Default Org Unit"><i class="fa fa-pencil-square"></i></a>
+                                    </span>
+                                    <div class="row" ng-show="isEditDefaultOrg">
+                                        <div class="col-md-4">
+                                            <select class="form-control" chosen ng-model="defaultOrgUnit" ng-options="unit as unit.orgName for unit in member.orgMemberships | filter: removeNonMemberOrgs" required="">
+                                              <option value=""></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-primary btn-sm" type="button" ng-click="updateDefaultOrg(member)">Update Default Org</button>
+                                            <button class="btn btn-info btn-sm" type="button" ng-click="isEditDefaultOrg = false">Cancel</button>
+                                        </div>
+                                    </div>
+                                </dd>
+                                <dt>Position:</dt>
+                                <dd>
+                                    <span ng-hide="isEditPosition">
+                                        {{member.role}}
+                                        <a href ng-show="isAdmin || isManager" ng-click="isEditPosition = true" tooltip-placement="bottom" tooltip="Edit user position"><i class="fa fa-pencil-square"></i></a>
+                                    </span>
+                                    <div class="row" ng-show="(isAdmin || isManager) && isEditPosition">
+                                        <div class="col-md-4">
+                                            <select name="userPosition" id="userPosition" class="form-control" ng-model="member.role" required="">
+                                                <option value="member">member</option>
+                                                <option value="manager">manager</option>
+                                                <option ng-if="isAdmin" value="admin">admin</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-primary btn-sm" type="button" ng-click="updatePosition(member)">Update position</button>
+                                            <button class="btn btn-info btn-sm" type="button" ng-click="cancelUpdatePosition()">Cancel</button>
+                                        </div>
+                                    </div>
+                                </dd>
+                                <dt>Email:</dt>
+                                <dd>{{member.email}}</dd>
+                                <dt ng-if="member.createdAt">Created At:</dt>
+                                <dd ng-if="member.createdAt">{{member.createdAt | date: 'dd-MMM-yyyy'}}</dd>
+                                <dt ng-if="member.lastLoggedInAt">Last Login:</dt>
+                                <dd ng-if="member.lastLoggedInAt">{{member.lastLoggedInAt | date: 'dd-MMM-yyyy'}}</dd>
+                                <dt ng-if="member.updatedAt">Updated At:</dt>
+                                <dd ng-if="member.updatedAt">{{member.updatedAt | date: 'dd-MMM-yyyy'}}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ibox">
+        <div class="ibox-title"><h3>Activity</h3></div>
+        <div class="ibox-content">
+            <div class="panel blank-panel ui-tab">
+                <uib-tabset>
+                    <uib-tab heading="Memberships">
+                        <table class="table table-striped table-bordered table-hover" ng-show="member.orgMemberships.length">
+                            <thead>
+                                <tr>
+                                    <th>Organization Name</th>
+                                    <th>Role</th>
+                                    <th ng-if="isAdmin"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in member.orgMemberships" ng-if="item.role">
+                                    <td>{{item.orgName}}</td>
+                                    <td>{{item.role | lowercase}}</td>
+                                    <td ng-if="isAdmin">
+                                      <a href="javascript:void(0);" ng-click="editMembership(item,member)"><i class="fa fa-pencil-square"></i></a>
+                                      <a href="javascript:void(0);" ng-click="removeMembership(item,member._id,item.role)"><i class="fa fa-remove-circle"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div ng-hide="member.orgMemberships">
+                            <p class="empty-list">No Memberships</p>
+                        </div>
+                        <div ng-if="isAdmin || isManager">
+                          <ng-form name="addUserMembershipForm" novalidate>
+                            <input type="hidden" name="userEmail" id="userEmail" class="form-control" ng-model="invitation.recipients">
+                            <h3>Add Membership</h3>
+                            <div ng-include="'app/alert.html'"></div>
+                            <div class="row">
+                              <div class="col-md-5 form-group" ng-class="{ 'has-error': submitted && addUserMembershipForm.orgUnit.$error.required }">
+                                <label for="orgUnit">Org Unit</label>
+                                <select name="orgUnit" id="orgUnit" class="form-control" chosen ng-model="invitation.orgUnit" ng-options="unit as unit.orgName for unit in orgUnits track by unit.orgUnitId" required="">
+                                  <option value=""></option>
+                                </select>
+                                <div ng-show="submitted">
+                                  <div ng-show="addUserMembershipForm.orgUnit.$error.required" class="text-danger">This field is required</div>
+                                </div>
+                              </div>
+                              <div class="col-md-4 form-group" ng-class="{ 'has-error': submitted && addUserMembershipForm.userRole.$error.required }">
+                                <label for="userRole">Role</label>
+                                <select name="userRole" id="userRole" class="form-control" ng-model="invitation.role" required="">
+                                  <option value="member" selected>member</option>
+                                  <option value="manager">manager</option>
+                                </select>
+                                  <div ng-show="submitted">
+                                      <div ng-show="addUserMembershipForm.userRole.$error.required" class="text-danger">This field is required</div>
+                                  </div>
+                              </div>
+                              <div class="col-md-3" style="margin-top: 22px;">
+                                <button class="btn btn-primary" type="submit" ng-click="sendInvitation(addUserMembershipForm)">Add membership</button>
+                              </div>
+                            </div>
+                          </ng-form>
+                        </div>
+                    </uib-tab>
+                    <uib-tab heading="Reviews">
+                        <table class="table table-striped table-bordered table-hover" ng-show="member.reviews">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Org Unit</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="linked-row" ng-repeat="review in member.reviews" ng-click="$state.go('review.view', {reviewId: review.reviewId})">
+                                    <td class="text-nowrap">{{review.reviewId}}</td>
+                                    <td>{{review.title}}</td>
+                                    <td>{{review.responsibleOrg.orgName}}</td>
+                                    <td>{{review.reviewType}}</td>
+                                    <td>{{review.status}}</td>
+                                    <td>{{review.updatedAt | date: 'dd-MMM-yyyy'}}</td>
+                                    <td>{{review.role}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div ng-hide="member.reviews">
+                            <p class="empty-list">No Reviews</p>
+                        </div>
+                    </uib-tab>
+                    <uib-tab heading="Records">
+                        <table class="table table-striped table-bordered table-hover" ng-show="member.records">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Org Unit</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="linked-row" ng-repeat="record in member.records" ng-click="$state.go('governance-record.view', {recordId: record.recordId})">
+                                    <td class="text-nowrap">{{record.recordId}}</td>
+                                    <td>{{record.title}}</td>
+                                    <td>{{record.category}}</td>
+                                    <td>{{record.status}}</td>
+                                    <td>{{record.responsibleOrg.orgName}}</td>
+                                    <td>{{record.role}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div ng-hide="member.records">
+                            <p class="empty-list">No Records</p>
+                        </div>
+                    </uib-tab>
+                    <uib-tab heading="Controls">
+                        <table class="table table-striped table-bordered table-hover" ng-show="member.controls">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Category</th>
+                                    <th>Role</th>
+                                    <th>Responsible Org Unit</th>
+                                    <th>Last Update</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="linked-row" ng-repeat="control in member.controls" ng-click="$state.go('control.view', {controlId: control.controlId})">
+                                    <td class="text-nowrap">{{control.controlId}}</td>
+                                    <td>{{control.title}}</td>
+                                    <td>{{control.status}}</td>
+                                    <td>{{control.category}}</td>
+                                    <td>{{control.role}}</td>
+                                    <td>{{control.responsibleOrg.orgName}}</td>
+                                    <td>{{control.updatedAt | date: 'dd-MMM-yyyy'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div ng-hide="member.controls">
+                            <p class="empty-list">No Controls</p>
+                        </div>
+                    </uib-tab>
+                    <uib-tab heading="Action Items">
+                        <table class="table table-striped table-bordered table-hover" ng-show="member.actionItems">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="linked-row" ng-repeat="action in member.actionItems" ng-click="$state.go('action-item.view', {actionItemId: action.actionItemId})">
+                                    <td>{{action.actionItemId}}</td>
+                                    <td>{{action.title}}</td>
+                                    <td>{{action.status}}</td>
+                                    <td>{{action.priority}}</td>
+                                    <td>{{action.dueDate | date: 'dd-MMM-yyyy'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div ng-hide="member.actionItems">
+                            <p class="empty-list">No Action Items</p>
+                        </div>
+                    </uib-tab>
+                </uib-tabset>
+            </div>
+
+        </div>
+    </div>
+</div>

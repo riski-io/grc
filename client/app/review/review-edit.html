@@ -1,0 +1,151 @@
+<div class="modal fade" id="heirarchy">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4> </div>
+      <div class="modal-body">
+        <div ui-tree="options" data-drag-enabled="false">
+          <ol ui-tree-nodes ng-model="orgTree">
+            <li ng-repeat="item in orgTree" ui-tree-node ng-include="'app/tree.html'" collapsed="true"></li>
+          </ol>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-12">
+        <h2 ng-if="review._id">Edit Review - # {{review._id}}</h2>
+        <h2 ng-if="!review._id">New Review</h2>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-show="isLoading">
+    <div class="text-center">
+        <h2>Loading....</h2>
+        <div class="block-spinner"></div>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-hide="isLoading">
+    <div class="ibox">
+        <div class="ibox-content">
+            <ng-form name="reviewForm" ng-submit="saveReview(reviewForm)" novalidate>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-12" ng-class="{ 'has-error': reviewSubmitted && reviewForm.reviewTitle.$error.required }">
+                            <label for="reviewTitle">Review Title</label>
+                            <input type="text" name="reviewTitle" id="reviewTitle" class="form-control" placeholder="Review Title" ng-model="review.title" required>
+                            <div ng-show="reviewSubmitted">
+                                <div ng-show="reviewForm.reviewTitle.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-4" ng-class="{ 'has-error': reviewSubmitted && reviewForm.reviewStatus.$error.required }">
+                            <label for="reviewStatus">Review Status</label>
+                            <select chosen disable-search="true" name="reviewStatus" id="reviewStatus" class="form-control" ng-model="review.status" ng-init="review.status = review.status || 'Planned'" ng-options="status as status for status in statuses" required>
+                                <option value=""></option>
+                            </select>
+                            <div ng-show="reviewSubmitted">
+                                <div ng-show="reviewForm.reviewStatus.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4" ng-class="{ 'has-error': reviewSubmitted && reviewForm.reviewOrgUnit.$error.required }">
+                            <label for="reviewOrgUnit">Org Unit:</label>
+                            <div class="input-group">
+                                <input class="form-control" name="reviewOrgUnit" readonly="" ng-model="review.responsibleOrg.orgName" id="reviewOrgUnit" required>
+                                 <span class="input-group-btn">
+                                  <a class="btn btn-info" data-toggle="modal" data-target="#heirarchy"><span class="fa fa-filter" ></span>
+                                  </a>
+                                </span>
+                            </div>
+                            <div ng-show="reviewSubmitted">
+                                <div ng-show="reviewForm.reviewOrgUnit.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4" ng-class="{ 'has-error': reviewSubmitted && reviewForm.reviewType.$error.required }">
+                            <label for="reviewType">Review type</label>
+                            <select chosen disable-search="true" name="reviewType" id="reviewType" class="form-control" ng-model="review.reviewType" ng-options="review_type.code as review_type.title for review_type in enums.review_type" required>
+                                <option value=""></option>
+                            </select>
+                            <div ng-show="reviewSubmitted">
+                                <div ng-show="reviewForm.reviewType.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12" ng-class="{ 'has-error': reviewSubmitted && reviewForm.reviewDescription.$error.required }">
+                            <label for="reviewTitle">Description</label>
+                            <div summernote config="wysiwygConfig" required height="100" class="summernote" name="reviewDescription" ng-model="review.description"></div>
+                            <div ng-show="reviewSubmitted">
+                                <div ng-show="reviewForm.reviewDescription.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h3>Attachments</h3>
+                </div>
+                <div class="ibox-content">
+                    <item-attachments editable="true"></item-attachments>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h3>Participants</h3>
+                </div>
+                <div class="ibox-content">
+                    <h4 class="h4">Current</h4>
+                    <p class="text-muted" ng-if="!review.participantList.length">-None-<p>
+                    <ul class="list-unstyled">
+                        <li ng-model="review.participantList" ng-repeat="participant in review.participantList"><a href ui-sref="member.view({userId: participant._id})">{{participant.display_name}}</a> <a href class="pull-right" ng-click="removeParticipant(participant)"><i class="fa fa-remove"></i></a></li>
+                    </ul>
+                    <label class="h4" for="addMember">Add member</label>
+                    <div class="row">
+                        <div class="form-group col-lg-12" ng-class="{'has-error': userIsPartisipant === true}">
+                            <select class="form-control" chosen id="addMember" ng-change="userIsPartisipant = false" ng-model="addedMember" ng-options="user as user.display_name for user in users track by user._id" required>
+                                <option value=""></option>
+                            </select>
+                            <span class="error" ng-show="userIsPartisipant">This member already participate in this review</span>
+                            <div ng-show="reviewSubmitted && !review.participantList.length">
+                                <span class="text-danger">At least one participant should be added</span>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <button class="btn btn-sm btn-primary pull-right m-t-n-xs" ng-disabled="!addedMember._id" ng-click="addParticipant(addedMember);" type="button">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="ibox">
+            <div class="ibox-content">
+                <div class="form-group clearfix">
+                    <div class="text-right">
+                        <a class="btn btn-white" ui-sref="review.view({reviewId: review._id})" href>Cancel</a>
+                        <button type="submit" class="btn btn-primary" ng-click="saveReview(reviewForm)">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

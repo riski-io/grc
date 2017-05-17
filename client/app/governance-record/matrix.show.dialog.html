@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <button type="button" class="close" close ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Severity Matrix Legend</h4>
+</div>
+<div class="modal-body">
+    <table class="table table-hover table-striped table-bordered no-margins" ng-hide="isLoading">
+        <thead>
+        <tr>
+            <th class="text-nowrap">Code Value</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody class="row">
+        <tr ng-repeat="item in matrixItems | orderBy:'code'" ng-class="{'highlighted': rating == item.rating}">
+            <td class="text-center">{{item.rating}}</td>
+            <td>{{item.description}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="wrapper wrapper-content" ng-show="isLoading">
+        <div class="text-center">
+            <h2>Loading....</h2>
+            <div class="block-spinner"></div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-white" close ng-click="cancel()">Close</button>
+</div>

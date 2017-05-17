@@ -1,0 +1,42 @@
+<div class="col-md-12">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5>Admin: Local Settings</h5>
+    </div>
+    <div class="ibox-content" ng-hide="isLoading">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th style="width: 1%">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in settings">
+            <td>{{item.name}}</td>
+            <td>{{item.value}}</td>
+            <td style="text-align: center">
+              <a href="javascript:void(0);" ng-click="edit(item)"><i class="fa fa-pencil-square"></i></a>
+              <a href="javascript:void(0);" tooltip="{{item.description}}"><i class="fa fa-lg fa-info-circle"></i></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ibox-content" ng-show="isLoading">
+      Loading...
+    </div>
+  </div>
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5>Admin: Environment Settings</h5>
+    </div>
+    <div class="ibox-content" ng-hide="isLoading">
+      <pre>{{config}}</pre>
+    </div>
+    <div class="ibox-content" ng-show="isLoading">
+      Loading...
+    </div>
+  </div>
+</div>

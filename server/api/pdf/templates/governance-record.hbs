@@ -1,0 +1,38 @@
+
+
+<blockquote >
+    <h3 class="text-primary">Governace Records</h3>
+</blockquote>
+
+<p> Organisation Unit : {{orgUnit.orgName}}</p>
+
+<table class="table table-bordered table-striped">
+    <thead> 
+        <th>ID</th> 
+        <th>Title</th> 
+        <th>Category</th> 
+        <th>Unit</th> 
+        <th>Status</th> 
+        <th>Review Type</th> 
+        <th>Cns</th> 
+        <th>Lik</th> 
+        <th>Rtg</th> 
+        <th>Updated</th> 
+    </thead> 
+    <tbody> 
+        {{#items}} 
+        <tr> 
+            <td class="text-nowrap"><a href="{{site_url}}/governance-record/{{_source.id}}" target="_blank">{{_source.id}}</a></td> 
+            <td>{{_source.title}}</td> 
+            <td>{{_source.category}}</td> 
+            <td>{{_source.orgUnitName}}</td> 
+            <td>{{_source.status}}</td> 
+            <td>{{_source.reviewtype}}</td> 
+            <td>{{_source.overallAssessment.controlledConsequence}}</td> 
+            <td>{{_source.overallAssessment.controlledLikelihood}}</td> 
+            <td>{{_source.overallAssessment.controlledRating}}</td>
+            <td>{{formatDate _source.updatedAt 'short'}}</td>
+        </tr> 
+        {{/items}} 
+    </tbody> 
+</table> 

@@ -1,0 +1,217 @@
+
+<div class="modal fade" id="heirarchy">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4> </div>
+      <div class="modal-body">
+        <div ui-tree="options" data-drag-enabled="false">
+          <ol ui-tree-nodes ng-model="orgTree">
+            <li ng-repeat="item in orgTree" ui-tree-node ng-include="'app/tree.html'" collapsed="true"></li>
+          </ol>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <div class="pull-right m-t-md noprint">
+        <a class="btn btn-xs btn-primary" ui-sref="compliance-form.new" ><i class="fa fa-plus"></i> Add New</a>
+    </div>
+    <h2 >Compliance Forms</h2>
+  </div>
+</div>
+
+
+<div class="wrapper wrapper-content">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h2>Pending Surveys</h2>
+    </div>
+    <div class="ibox-content">
+      <table class="table table-striped table-bordered table-hover table-custom entity-list" datatable="ng" dt-options="dtOptions" dt-columns="dtColumnDefs">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Template</th>
+            <th>Category</th>
+            <th>Res. Unit</th>
+            <th>Res. Role</th>
+            <th>Status</th>
+            <th>Updated Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="linked-row" ng-repeat="item in result.pending.data" ng-click="fillResponse(item._source.id)">
+            <td class="text-nowrap">{{item._source.id}}</td>
+            <td>{{item._source.title}}</td>
+            <td>{{item._source.complianceFormTemplateId}}</td>
+            <td>{{item._source.category}}</td>
+            <td>{{item._source.responsibleOrg.orgName}}</td>
+            <td>{{item._source.responsibleRole}}</td>
+            <td>{{item._source.status}}</td>
+            <td>{{item._source.updatedAt | date : 'dd-MMM-yyyy'}}</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+</div>
+</div>
+<div class="wrapper wrapper-content">
+  <div class="ibox float-e-margins">
+    <div class="ibox-content">
+      <div ng-hide="isLoading">
+        <div class="well">
+          Please choose an organisation unit by clicking on the organisation unit name and select to see all records for your chosen unit. Optionally you can show all records in the organisation unit hierarchy by checking the "include children" box. You can only see results for the org units for which you are a mamber.
+        </div>
+        <div class="form-inline">
+          <div class="form-group">
+            <label>Show results for</label><span class="org-name-filter">{{orgUnit.orgName}}</span>
+            <a class="btn btn-info btn-xs ml15" data-toggle="modal" data-target="#heirarchy">
+              <span class="fa fa-filter" ></span>
+            </a>
+          </div>
+          <div class="form-group">
+              <label class="checkbox-control mt2 ml20"> <input type="checkbox" ng-model="includeChildren" ng-change="updateSearchResults(null, true)"/>
+                <span> Include children</span>
+              </label>
+            </div>
+        </div>
+        <hr>
+        <uib-tabset active="active">
+          <uib-tab index="0" heading="My Surveys">
+            <div class="row facet-filter m-t-md" ng-if="result.forms.data.hits.total">
+              <div class="col-sm-3">
+                <h5 ng-if="result.forms.facets.category.buckets.length">Category</h5>
+                <ul  class="folder-list m-b-md">
+                  <li ng-repeat="category in result.forms.facets.category.buckets">
+                    <label class="checkbox-control">
+                     <input type="checkbox" checklist-model="result.forms.filters.category" checklist-value="category.key" id="checkbox-{{$index}}" checklist-change="updateSelectedFacets()" name="category"> 
+                      <span>{{category.key}} ({{category.doc_count}})</span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-sm-3">
+                <h5 ng-if="result.forms.facets.status.buckets.length">Status</h5>
+                <ul  class="folder-list m-b-md">
+                  <li ng-repeat="status in result.forms.facets.status.buckets">
+                    <label class="checkbox-control">
+                      <input type="checkbox" checklist-model="result.forms.filters.status" checklist-value="status.key" id="checkbox-{{$index}}" checklist-change="updateSelectedFacets()" name="status"> 
+                      <span>{{status.key}} ({{status.doc_count}})</span>
+                    </label>
+                </ul>
+              </div>
+              <div class="col-sm-12">
+                <button class="btn btn-primary pull-right" ng-click="updateSearchResults(null, false)">Apply</button>
+              </div>
+            </div>
+            <table class="table table-striped table-bordered table-hover table-custom entity-list" datatable="ng" dt-options="dtOptions" dt-columns="dtColumnDefs">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Template</th>
+                  <th>Category</th>
+                  <th>Res. Unit</th>
+                  <th>Res. Role</th>
+                  <th>Status</th>
+                  <th>Updated Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="linked-row" ng-repeat="item in result.forms.data.hits.hits" ng-click="goToComplianceForm(item._source)">
+                  <td class="text-nowrap">{{item._source.id}}</td>
+                  <td>{{item._source.title}}</td>
+                  <td>{{item._source.complianceFormTemplateId}}</td>
+                  <td>{{item._source.category}}</td>
+                  <td>{{item._source.responsibleOrg.orgName}}</td>
+                  <td>{{item._source.responsibleRole}}</td>
+                  <td>{{item._source.status}}</td>
+                  <td>{{item._source.updatedAt | date : 'dd-MMM-yyyy'}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row">
+              <div class="col-md-4">
+                <p class="mt20" ng-if="result.forms.data.hits.total > 0">Showing {{result.forms.pagination.currentPage*itemsPerPage}} to {{(result.forms.pagination.currentPage*itemsPerPage + itemsPerPage) > result.forms.data.hits.total ? result.forms.data.hits.total :  (result.forms.pagination.currentPage*itemsPerPage + itemsPerPage)}} of {{result.forms.data.hits.total}} entries</p>
+              </div>
+              <div class="col-md-8">
+                  <uib-pagination  class="pagination pull-right" total-items="result.forms.data.hits.total" items-per-page="itemsPerPage" ng-model="result.forms.pagination.currentPage" max-size="10" rotate="true" ng-change="getResults(false)"></uib-pagination>
+              </div>
+            </div>
+          </uib-tab>
+          <uib-tab index="1" heading="My Responses">
+            <div class="row facet-filter m-t-md" ng-if="result.responses.data.hits.total">
+              <div class="col-sm-3">
+                <h5 ng-if="result.responses.facets.category.buckets.length">Category</h5>
+                <ul  class="folder-list m-b-md">
+                  <li ng-repeat="category in result.responses.facets.category.buckets">
+                    <label class="checkbox-control">
+                     <input type="checkbox" checklist-model="result.responses.filters.category" checklist-value="category.key" id="checkbox-{{$index}}" checklist-change="updateSelectedFacets()" name="category"> 
+                      <span>{{category.key}} ({{category.doc_count}})</span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-sm-3">
+                <h5 ng-if="result.responses.facets.status.buckets.length">Status</h5>
+                <ul  class="folder-list m-b-md">
+                  <li ng-repeat="status in result.responses.facets.status.buckets">
+                    <label class="checkbox-control">
+                      <input type="checkbox" checklist-model="result.responses.filters.status" checklist-value="status.key" id="checkbox-{{$index}}" checklist-change="updateSelectedFacets()" name="status"> 
+                      <span>{{status.key}} ({{status.doc_count}})</span>
+                    </label>
+                </ul>
+              </div>
+              <div class="col-sm-12">
+                <button class="btn btn-primary pull-right" ng-click="updateSearchResults(null, false)">Apply</button>
+              </div>
+            </div>
+            <table class="table table-striped table-bordered table-hover table-custom entity-list" datatable="ng" dt-options="dtOptions" dt-columns="dtColumnDefs">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Template</th>
+                  <th>Category</th>
+                  <th>Res. Unit</th>
+                  <th>Res. Role</th>
+                  <th>Status</th>
+                  <th>Updated Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="linked-row" ng-repeat="item in result.responses.data.hits.hits" ng-click="goToComplianceForm(item._source)">
+                  <td class="text-nowrap">{{item._source.id}}</td>
+                  <td>{{item._source.title}}</td>
+                  <td>{{item._source.complianceFormTemplateId}}</td>
+                  <td>{{item._source.category}}</td>
+                  <td>{{item._source.responsibleOrg.orgName}}</td>
+                  <td>{{item._source.responsibleRole}}</td>
+                  <td>{{item._source.status}}</td>
+                  <td>{{item._source.updatedAt | date : 'dd-MMM-yyyy'}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row">
+              <div class="col-md-4">
+                <p class="mt20" ng-if="result.responses.data.hits.total > 0">Showing {{result.responses.pagination.currentPage*itemsPerPage}} to {{(result.responses.pagination.currentPage*itemsPerPage + itemsPerPage) > result.responses.data.hits.total ? result.responses.data.hits.total :  (result.responses.pagination.currentPage*itemsPerPage + itemsPerPage)}} of {{result.responses.data.hits.total}} entries</p>
+              </div>
+              <div class="col-md-8">
+                  <uib-pagination  class="pagination pull-right" total-items="result.responses.data.hits.total" items-per-page="itemsPerPage" ng-model="result.responses.pagination.currentPage" max-size="10" rotate="true" ng-change="getResults(false)"></uib-pagination>
+              </div>
+            </div>
+          </uib-tab>
+        </uib-tabset>
+      </div>
+    </div>
+  </div>
+</div>

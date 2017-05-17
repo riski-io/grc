@@ -1,0 +1,36 @@
+<ul>
+  {{#if AuditHistory.changes.title}}
+  <li>
+    <strong>Title</strong>: {{{AuditHistory.changes.title}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.assignedTo}}
+  <li>
+    <strong>Assignee</strong>:
+    <ul>
+      <li>Given Name: {{{AuditHistory.changes.assignedTo.givenName}}}</li>
+      <li>Family Name: {{{AuditHistory.changes.assignedTo.familyName}}}</li>
+    </ul>
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.description}}
+  <li>
+    <strong>Context</strong>: {{{AuditHistory.changes.description}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.actionRequired}}
+  <li>
+    <strong>Action Required</strong>: {{{AuditHistory.changes.actionRequired}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.percentComplete}}
+  <li>
+    <strong>Overall % Complete</strong>: {{{AuditHistory.changes.percentComplete}}}%
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.dueDate}}
+  <li>
+    <strong>Due Date</strong>: {{{AuditHistory.changes.dueDate}}}
+  </li>
+  {{/if}}
+</ul>

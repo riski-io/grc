@@ -1,0 +1,14 @@
+.trash { color:rgb(209, 91, 71); }
+td.actions {
+  text-align: center;
+  white-space: nowrap;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.mt25{margin-top:25px;}
+.p10{padding : 10px;}
+.log-window{
+  max-height: 200px;
+  overflow: auto;
+}

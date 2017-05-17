@@ -1,0 +1,21 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-md-12">
+        <h2>Risk Analytics</h2>
+    </div>
+</div>
+<div class="wrapper wrapper-content row">
+  <div class="col-lg-6" ng-repeat="widget in dashboard.widgets">
+      <div class="ibox float-e-margins">
+          <div class="ibox-title">
+              <h5>{{ widget.name }}</h5>
+          </div>
+          <div class="ibox-content">
+              <nvd3 options="widget.chart.options" 
+                    data="widget.chart.data" 
+                    api="widget.chart.api" 
+                    config="config" 
+                    events="events"></nvd3>
+          </div>
+      </div>
+  </div>
+</div>

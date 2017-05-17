@@ -1,0 +1,198 @@
+<div class="modal fade" id="heirarchy">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4> </div>
+      <div class="modal-body">
+        <div ui-tree="options" data-drag-enabled="false">
+          <ol ui-tree-nodes ng-model="orgTree">
+            <li ng-repeat="item in orgTree" ui-tree-node ng-include="'app/tree.html'" collapsed="false"></li>
+          </ol>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row wrapper border-bottom white-bg">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <div class="form-inline list-filter">
+        <div class="form-group">
+          <label for="orgUnit"><h2>
+            Governance Record Snapshot of <a class="underline" data-toggle="modal" data-target="#heirarchy">{{orgUnit.orgName}}</a>
+          </h2> </label>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-control m-t-xs ml20"> <input type="checkbox" ng-model="includeChildren" ng-change="updateSearchResults(null, true)"/>
+            <span> Include children</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-md-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
+              <div class="cle">
+                <risk-matrix risks="risks" risk-type="initialAssessment" on-risk-click="goToRecord"></risk-matrix>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>Hierarchy Browser</h5>
+        </div>
+        <div class="ibox-content">
+          <div ui-tree="options" data-drag-enabled="false">
+              <div class="row">
+                  <div class="col-sm-offset-6 col-sm-6 text-center">
+                    Ratings
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                    Unit 
+                </div>
+                <div class="col-sm-1 text-center">Open Risks</div>
+                <div class="col-sm-1 text-center">Open Tasks</div>
+                <div class="col-sm-1 text-center">Env</div>
+                <div class="col-sm-1 text-center">Fi</div>
+                <div class="col-sm-1 text-center">H&S</div>
+                <div class="col-sm-1 text-center">Mnf</div>
+                <div class="col-sm-1 text-center">Mkt</div>
+                <div class="col-sm-1 text-center">Rep</div>
+            </div>
+            <ol ui-tree-nodes ng-model="hierarchyBrowser">
+              <li ng-repeat="item in hierarchyBrowser" ui-tree-node ng-include="'hierarchy-browser.html'" collapsed="false"></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>My Records</h5>
+        </div>
+        <div class="ibox-content">
+          <table class="table table-striped table-hover table-custom" ng-show="records.length">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="record in records">
+                <td><a ui-sref="governance-record.view({recordId: record._id})">{{record._source.title}}</a></td>
+                <td>{{record._source.category}}</td>
+                <td rating-style="record._source.overallAssessment.controlledRating">{{record._source.overallAssessment.controlledRating}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div ng-hide="records.length">
+            <p class="empty-list">Records not found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>My Reviews</h5>
+        </div>
+        <div class="ibox-content">
+          <table class="table table-striped table-hover table-custom" ng-show="reviews.length">
+            <thead>
+              <tr>
+                <th>Topic</th>
+                <th style="width : 30%">Due Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="review in reviews">
+                <td><a ui-sref="review.view({reviewId: review._id})">{{review._source.title}}</a></td>
+
+                <td>{{review._source.updatedAt| date: 'dd MMM yyyy'}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div ng-hide="reviews.length">
+            <p class="empty-list">Reviews not found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>My Action Items</h5>
+        </div>
+        <div class="ibox-content">
+          <table class="table table-striped table-hover table-custom" ng-show="actionItems.length">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Status</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="action in actionItems">
+                <td><a ui-sref="action-item.view({actionItemId: action._id})">{{action._source.title}}</a></td>
+                <td><span class="label" ng-class="{'label-primary': action._source.status === 'Active', 'label-warning': action._source.status === 'Closed'}">{{action._source.status}}</span></td>
+                <td>{{action._source.priority}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div ng-hide="actionItems.length">
+            <p class="empty-list">Action items not found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="hierarchy-browser.html">
+  <div ui-tree-handle class="tree-node tree-node-content hierarchy-browser" data-nodrag> 
+      <div class="row">
+        <div class="col-sm-4 cell">
+            <a class="btn btn-success btn-xs" ng-if="item.items && item.items.length > 0" ng-click="toggle(this)"><span class="fa" ng-class="{'fa-chevron-right': collapsed, 'fa-chevron-down': !collapsed}"></span>
+            </a>
+            {{item.orgName}} 
+        </div>
+        <div class="col-sm-1 text-center cell">{{item.aggregations.openRecords}}</div>
+        <div class="col-sm-1 text-center cell">{{item.aggregations.openActionItems}}</div>
+        <div class="col-sm-1 text-center cell" rating-style="item.aggregations.ratings['OPERATIONAL - ENVIRONMENT']" >{{item.aggregations.ratings['OPERATIONAL - ENVIRONMENT'] | number:1}}</div>
+        <div class="col-sm-1 text-center cell" rating-style="item.aggregations.ratings['FINANCIAL']">{{item.aggregations.ratings['FINANCIAL'] | number:1}}</div>
+        <div class="col-sm-1 text-center cell" rating-style="item.aggregations.ratings['OPERATIONAL - HEALTH AND SAFETY']">{{item.aggregations.ratings['OPERATIONAL - HEALTH AND SAFETY'] | number:1}}</div>
+        <div class="col-sm-1 text-center cell" rating-style="item.aggregations.ratings['OPERATIONAL - MANUFACTURE AND SUPPLY']">{{item.aggregations.ratings['OPERATIONAL - MANUFACTURE AND SUPPLY'] | number:1}}</div>
+        <div class="col-sm-1 text-center cell" rating-style="item.aggregations.ratings['MARKET DEMAND']">{{item.aggregations.ratings['MARKET DEMAND'] | number:1}}</div>
+        <div class="col-sm-1 text-center cell" rating-style="item.aggregations.ratings['REPUTATION - OUR CONDUCT']">{{item.aggregations.ratings['REPUTATION - OUR CONDUCT'] | number:1}}</div>
+    </div>
+  </div>
+  <ol ui-tree-nodes="options" ng-model="item.items" ng-class="{hidden: collapsed}" ng-if="!collapsed">
+    <li ng-repeat="item in item.items" ui-tree-node ng-include="'hierarchy-browser.html'" collapsed="true">
+    </li>
+  </ol>
+</script>

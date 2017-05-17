@@ -1,0 +1,97 @@
+<div class="inmodal" id="riskmodal">
+    <div class="modal-header">
+        <h4 class="modal-title" ng-if="!bRiskEdit">Create New Risk</h4>
+        <h4 class="modal-title" ng-if="bRiskEdit">Edit Risk</h4>
+    </div>
+    <div class="modal-body">
+      <form name="riskForm">
+        <div class="form-group row">
+          <div class="col-sm-6 col-md-6 col-lg-3 m-t-sm" ng-class="{ 'has-error': newRiskSubmitted && riskForm.recordCategory.$error.required }">
+            <label for="risk_recordCategory">Category <a href tooltip="Click to see Legend" ng-click="showLegend('risk_category')"><i class="fa fa-lg fa-info-circle"></i></a></label>
+            <select chosen name="recordCategory" id="risk_recordCategory" class="form-control" ng-model="newRisk.category" ng-options="riskCategory.code as riskCategory.code for riskCategory in enums.risk_category" required disable-search="true">
+              <option value=""></option>
+            </select>
+            <div ng-show="newRiskSubmitted">
+              <div ng-show="riskForm.recordCategory.$error.required" class="text-danger">This field is required</div>
+            </div>
+          </div>
+        </div>  
+        <div class="form-group row">
+          <div class="col-xs-12">
+            <h3>Initial Assessment</h3>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4 m-t-sm" ng-class="{ 'has-error': newRiskSubmitted && !riskForm.riskInitialCost.$valid }">
+            <label for="risk_riskInitialCost">Impact, $ Millions (AUD)</label>
+            <input type="number" name="riskInitialCost" id="risk_riskInitialCost" ng-model="newRisk.initialAssessment.cost" ng-min="minFinancialImpactValue(newRisk.category, newRisk.initialAssessment.consequence)" ng-max="maxFinancialImpactValue(newRisk.category, newRisk.initialAssessment.consequence)" class="form-control" placeholder="$ Impact" ng-required="newRisk.category.toUpperCase() === 'FINANCIAL'">
+            <div ng-show="newRiskSubmitted">
+              <div ng-show="riskForm.riskInitialCost.$error.required" class="text-danger">This field is required</div>
+              <div ng-show="riskForm.riskInitialCost.$error.min || riskForm.riskInitialCost.$error.max" class="text-danger">Financial Impact amount and consequence rating must be aligned <a href tooltip="Click to see Legend" ng-click="showRiskMatrixLegend(newRisk.category)"><i class="fa fa-lg fa-info-circle"></i></a></div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4 m-t-sm" ng-class="{ 'has-error': newRiskSubmitted && riskForm.riskConsequence.$error.required }">
+            <label for="risk_riskConsequence">Consequence <a href tooltip="Click to see Legend" ng-click="showRiskMatrixLegend(newRisk.category)"><i class="fa fa-lg fa-info-circle"></i></a></label>
+            <select chosen name="riskConsequence" id="risk_riskConsequence" class="form-control" ng-model="newRisk.initialAssessment.consequence" required ng-change="newRisk.initialAssessment.cost.$setViewValue(newRisk.initialAssessment.cost.$viewValue)" ng-options="consequence.code as consequence.code for consequence in enums.consequence | orderBy:'code'" disable-search="true">
+              <option value=""></option>
+            </select>
+            <div ng-show="newRiskSubmitted">
+              <div ng-show="riskForm.riskConsequence.$error.required" class="text-danger">This field is required</div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4 m-t-sm" ng-class="{ 'has-error': newRiskSubmitted && riskForm.risklikelihood.$error.required }">
+            <label for="risk_riskLikelihood">Likelihood <a href tooltip="Click to see Legend" ng-click="showLegend('risk_likelihood')"><i class="fa fa-lg fa-info-circle"></i></a></label>
+            <select chosen name="risklikelihood" id="risk_riskLikelihood" class="form-control" ng-model="newRisk.initialAssessment.likelihood" required ng-options="risk_likelihood.code as risk_likelihood.code for risk_likelihood in enums.risk_likelihood | orderBy:'code'" disable-search="true">
+              <option value=""></option>
+            </select>
+            <div ng-show="newRiskSubmitted">
+              <div ng-show="riskForm.risklikelihood.$error.required" class="text-danger">This field is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-xs-12">
+            <h3>Controlled Assessment</h3>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4 m-t-sm" ng-class="{ 'has-error': newRiskSubmitted && !riskForm.riskControlledCost.$valid }">
+            <label for="risk_riskControlledCost">Impact, $ Millions (AUD)</label>
+            <input type="number" name="riskControlledCost" id="risk_riskControlledCost" ng-model="newRisk.controlledAssessment.cost" ng-min="minFinancialImpactValue(newRisk.category, newRisk.controlledAssessment.consequence)" ng-max="maxFinancialImpactValue(newRisk.category, newRisk.controlledAssessment.consequence)" class="form-control" placeholder="$ Impact" ng-required="newRisk.category.toUpperCase() === 'FINANCIAL'">
+            <div ng-show="newRiskSubmitted">
+              <div ng-show="riskForm.riskControlledCost.$error.required" class="text-danger">This field is required</div>
+              <div ng-show="riskForm.riskControlledCost.$error.min || riskForm.riskControlledCost.$error.max" class="text-danger">Financial Impact amount and consequence rating must be aligned <a href tooltip="Click to see Legend" ng-click="showRiskMatrixLegend(newRisk.category)"><i class="fa fa-lg fa-info-circle"></i></a></div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4 m-t-sm" ng-class="{ 'has-error': newRiskSubmitted && riskForm.riskConsequence.$error.required }">
+            <label >Consequence <a href tooltip="Click to see Legend" ng-click="showRiskMatrixLegend(newRisk.category)"><i class="fa fa-lg fa-info-circle"></i></a></label>
+            <select chosen name="riskControlledConsequence" id="risk_riskControlledConsequence" class="form-control" ng-model="newRisk.controlledAssessment.consequence" required ng-change="newRisk.controlledAssessment.cost.$setViewValue(newRisk.controlledAssessment.cost.$viewValue)"  ng-options="consequence.code as consequence.code for consequence in enums.consequence | orderBy:'code'" disable-search="true">
+              <option value=""></option>
+            </select>
+            <div ng-show="newRiskSubmitted">
+              <div ng-show="riskForm.riskControlledConsequence.$error.required" class="text-danger">This field is required</div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4 col-lg-4 m-t-sm" ng-class="{ 'has-error': newRiskSubmitted && riskForm.riskControlledLikelihood.$error.required }">
+            <label for="risk_riskControlledLikelihood">Likelihood <a href tooltip="Click to see Legend" ng-click="showLegend('risk_likelihood')"><i class="fa fa-lg fa-info-circle"></i></a></label>
+            <select chosen name="riskControlledLikelihood" id="risk_riskControlledLikelihood" class="form-control" ng-model="newRisk.controlledAssessment.likelihood" required ng-options="risk_likelihood.code as risk_likelihood.code for risk_likelihood in enums.risk_likelihood | orderBy:'code'" disable-search="true">
+              <option value=""></option>
+            </select>
+            <div ng-show="newRiskSubmitted">
+              <div ng-show="riskForm.riskControlledLikelihood.$error.required" class="text-danger">This field is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <table class="table table-bordered table-striped table-hover table-custom">
+            <tr>
+              <td colspan="5">
+                <label>Describe the potential consequence</label>
+                <div ng-model="newRisk.risk" summernote config="wysiwygConfig" height="100" class="summernote"></div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-white" ng-click="cancel()">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="saveRisk(riskForm.$valid)">Save changes</button>
+    </div>
+</div>

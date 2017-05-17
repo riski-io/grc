@@ -1,0 +1,207 @@
+
+
+<blockquote >
+    <h3 class="text-info">Governace Record {{item._id}}</h3>
+</blockquote>
+
+<div class="ibox">
+  <div class="ibox-content">
+    <div class="row m-b-md">
+      <div class="col-xs-8">
+        <h4>{{item.title}}</h4>
+      </div>
+      {{#if item.reviewType}}
+        <div class="col-xs-4 record-review-type text-info" ng-show="record.reviewType">
+            <h5>Review type: {{item.reviewType}}</h5>
+        </div>
+       {{/if}}
+    </div>
+
+    <div class="row">
+      <div class="col-xs-7">
+        <dl class="dl-horizontal">
+          <dt>Related Review:</dt>
+          <dd><a href="{{site_url}}/review/{{item.identifiedAt._id}}" target="_blank">{{item.identifiedAt.title}}</a></dd>
+          <dt>Org. Unit:</dt>
+          <dd>{{item.responsibleOrg.orgName}}</dd>
+          <dt>Resp. Officer:</dt>
+          <dd>{{item.responsibleUser.display_name}}</dd>
+        </dl>
+      </div>
+      <div class="col-xs-5">
+        <dl class="dl-horizontal">
+          <dt>Reviewer:</dt>
+          <dd>{{item.nominatedReviewer.givenName}} {{item.nominatedReviewer.familyName}}</dd>
+          <dt>Version:</dt>
+          <dd>{{item.version}}</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <dl class="dl-horizontal">
+          <dt>description: </dt>
+          <dd>{{{item.description}}}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+{{#if item.externalFactors}}
+<div class="ibox mt20">
+<div class="ibox-title">
+  <h4 class="text-info">External factors</h4>
+</div>
+<div class="ibox-content">
+  {{#each item.externalFactors}}
+    <div class="container">
+      <div class="row external-factor-row">
+        <div class="col-xs-6">
+          <h6>Description</h6>
+          <div>{{{description}}}</div>
+        </div>
+        <div class="col-xs-3">
+          <h6>Assessments </h6>
+          {{trend}}
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>
+</div>
+{{/if}}
+  {{#if item.assessment}}
+    <div class="ibox">
+    <div class="ibox-title">
+      <h4 class="text-info">Risk and controls</h4>
+    </div>
+    <div class="ibox-content">
+      <div>
+        <table class="table table-bordered table-record-risks table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th class="text-center">Impact, $ Millions (AUD)</th>
+              <th class="text-center">Consequence</th>
+              <th class="text-center">Likelihood</th>
+              <th class="rating-column text-center">Rating</th>
+            </tr>
+          </thead>
+          {{#each item.assessment}}
+              <tbody>
+                <tr>
+                  {{#if controls}}
+                     <td rowspan="3">{{inc  @index}}</td>
+                   {{^}}
+                    <td>{{inc @index}}</td>
+                  {{/if}}
+                  {{#if controls}}
+                     <td rowspan="3">{{category}}</td>
+                  {{^}}
+                    <td>{{category}}</td>
+                  {{/if}}
+                  <td>{{{risk}}}</td>
+                  <td class="text-center">{{formatCurrency initialAssessment.cost}}</td>
+                  <td class="text-center">{{initialAssessment.consequence}}</td>
+                  <td class="text-center">{{initialAssessment.likelihood}}</td>
+                  {{ratingstyle initialAssessment.rating}}
+                </tr>
+                {{#if controls}}
+                  <td colspan="5" class="record-controls-row">
+                    <table class="table table-bordered table-record-controls">
+                      {{#each controls}}
+                          <tr>
+                            <td><a href="{{site_url}}/control/{{controlId}}" target="_blank">{{title}}</a></td>
+                            <td width="25%">{{effectiveness}}</td>
+                          </tr>
+                      {{/each}}
+                    </table>
+                  </td>
+                {{/if}}
+                {{#if controlledAssessment}}
+                    {{#if controls}}
+                        <tr>
+                          <th>Controlled assessment</th>
+                          <td class="text-center">{{formatCurrency controlledAssessment.cost}}</td>
+                          <td class="text-center">{{controlledAssessment.consequence}}</td>
+                          <td class="text-center">{{controlledAssessment.likelihood}}</td>
+                          {{ratingstyle controlledAssessment.rating}}
+                        </tr>
+                    {{/if}}
+                {{/if}}
+              </tbody>
+          {{/each}}
+        </table>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+  <div class="ibox">
+    <div class="ibox-title">
+      <h4 class="text-info">Overall Ratings</h4>
+    </div>
+    <div class="ibox-content">
+      <div class="form-horizontal">
+        <div class="form-group">
+          <label class="col-xs-2 control-label"><br>Cost</label>
+          <div class="col-xs-3">
+            <label>Initial</label>
+            <input type="text" class="form-control" value="{{formatCurrency item.overallAssessment.initialCost}}" disabled>
+          </div>
+          <div class="col-xs-3">
+            <label>Current</label>
+            <input type="text" class="form-control" value="{{formatCurrency item.overallAssessment.controlledCost}}" disabled>
+          </div>
+          <div class="col-xs-3">
+            <label>Target</label>
+            <input type="text" class="form-control" value="{{formatCurrency item.overallAssessment.targetCost}}" disabled>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-2 control-label">Risk</label>
+          <div class="col-xs-3">
+            <label class="visible-xs">Initial</label>
+            {{ratingstyleInput item.overallAssessment.initialRating}}
+          </div>
+          <div class="col-xs-3">
+            <label class="visible-xs">Current</label>
+            {{ratingstyleInput item.overallAssessment.controlledRating}}
+          </div>
+          <div class="col-xs-3">
+            <label class="visible-xs">Target</label>
+            {{ratingstyleInput item.overallAssessment.targetRating}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{{#if relatedActionItems}}
+  <table class="table table-bordered table-striped">
+    <thead> 
+      <th>ID</th>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Prioirty</th>
+      <th>Due Date</th>
+      <th>Created By</th>
+      <th>Assigned To</th>
+    </thead> 
+    <tbody> 
+        {{#relatedActionItems}} 
+        <tr> 
+          <td class="text-nowrap"><a href="{{../site_url}}/action-item/{{_id}}" target="_blank">{{_id}}</a></td> 
+          <td>{{title}}</td> 
+          <td>{{status}}</td> 
+          <td>{{priority}}</td> 
+          <td>{{formattedDueDate}}</td> 
+          <td>{{responsibleuser}}</td> 
+          <td>{{assignedto}}</td>
+        </tr> 
+        {{/relatedActionItems}} 
+    </tbody> 
+  </table> 
+{{/if}}

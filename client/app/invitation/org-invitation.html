@@ -1,0 +1,7 @@
+<h2 ng-if="invitation && invitation.alreadyAdded">
+	You are already a member of {{invitation.organisationUnit.orgName}}, please 
+	<a href="/login"/>login</a> to your account to continue.</h2>
+<h2 ng-if="invitation && !invitation.alreadyAdded">
+	You have been added to {{invitation.organisationUnit.orgName}}, please 
+	<a href="/login" />login</a> to your  to continue.</h2>
+<h2 ng-if="error">Ooops! , someting went wrong. PLease try again later.</h2>

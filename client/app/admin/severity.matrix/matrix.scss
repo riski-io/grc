@@ -1,0 +1,33 @@
+table.severity-matrix {
+  th {
+    text-align: center;
+    white-space: nowrap;
+  }
+  tbody {
+    td {
+      border: 1px solid #e7eaec;
+    }
+  }
+  td.cell {
+    min-width: 100px;
+    min-height: 100px;
+    position: relative;
+    .actions {
+      position: absolute;
+      top: -1px;
+      right: 0px;
+      width: auto;
+      opacity: 0;
+      padding: 3px 7px;
+      background-color: #ffffff;
+      border: solid 1px #e7eaec;
+      border-top: none;
+      border-right: none;
+    }
+    &:hover {
+      .actions {
+        opacity: 1;
+      }
+    }
+  }
+}

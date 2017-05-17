@@ -1,0 +1,46 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2>Admin: Permissions</h2>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5>Admin: Permissions</h5>
+    </div>
+    <div class="ibox-content" ng-hide="isLoading">
+      <div ng-include="'app/alert.html'"></div>
+      <div class="panel panel-default" ng-repeat="role in roles" ng-show="pages.length">
+        <div class="panel-heading"><strong>Role: {{role.title}}</strong></div>
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-hover no-margins permissions">
+              <thead>
+                <tr>
+                  <th width="10%">&nbsp;</th>
+                  <th width="{{90 / permissions.length}}%" ng-repeat="permission in permissions">{{permission.title}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="page in pages">
+                  <th class=" nowrap">{{page.title}}</th>
+                  <td ng-repeat="permission in permissions"><label style="display: block;"><input type="checkbox" ng-model="page.roles[role.code][permission.code]"></label></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="text-right">
+        <button class="btn btn-primary" ng-click="save()">Save Changes</button>
+      </div>
+    </div>
+    <div class="ibox-content" ng-show="isLoading">
+        <div class="text-center">
+          <h2>Loading....</h2>
+          <div class="block-spinner"></div>
+        </div>
+      </div>
+  </div>
+</div>

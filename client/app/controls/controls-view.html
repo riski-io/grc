@@ -1,0 +1,183 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2 class="pull-left">Enterprise control #{{control._id}}</h2>
+    <div class="page-actions noprint" ng-show="control._id">
+<!--       <div style="display: inline-block" ng-show="allControls.length > 0">
+        <label style="display: inline-block">Merge Control</label>
+        <div style="display: inline-block; min-width: 400px;" ng-show="allControls.length > 0">
+          <select class="form-control input-sm" name="responsibleUser" id="responsibleUser" chosen required ng-model="mergeControl" ng-options="control as (control._id + ' ' + (control.title.length > 50? control.title.substr(0, 47) + '...' : control.title)) for control in allControls track by control._id">
+            <option value=""></option>
+          </select>
+        </div>
+          <a class="btn btn-xs btn-primary" ng-disabled="!mergeControl" ng-click="mergeControl && openMergeControlDialog()"><i class="fa fa-code-fork fa-fw"></i> merge</a>
+      </div> -->
+<!--       <div style="display: inline-block;" ng-hide="allControls.length > 0">
+        Loading controls list...
+      </div>
+      <span style="color: #bbb; font-size: 16px; margin-left: 10px;">|</span> -->
+      <a ng-if="rolePermissions.control.delete" tooltip-placement="bottom" tooltip="remove this control" class="btn btn-xs btn-primary" href ng-click="removeControl(control._id);" ><i class="fa fa-remove fa-fw"></i> delete</a>
+      <a ng-if="control._id && rolePermissions.control.edit" tooltip-placement="bottom" tooltip="edit this control" class="btn btn-xs btn-primary" ui-sref="control.edit({ controlId: control._id})" ><i class="fa fa-pencil-square-o fa-fw"></i> edit</a>
+      <i tooltip="Export as PDF" class=" fa-2x act-icon fa fa-file-pdf-o" download-pdf="control" type="control-details"></i>
+      <i tooltip="Print page" print-page print-element-id="main-content" class="fa fa-print fa-2x act-icon"></i>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-show="isLoading">
+  <div class="text-center">
+    <h2>Loading....</h2>
+    <div class="block-spinner"></div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-hide="isLoading">
+  <div class="ibox">
+    <div class="ibox-content">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="m-b-md">
+            <h2>{{control.title}}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-5">
+          <dl class="dl-horizontal">
+            <dt>Status:</dt>
+            <dd>{{control.status}}</dd>
+            <dt>Resp. Org.:</dt>
+            <dd>{{control.responsibleOrg.orgName}}</dd>
+            <dt>Resp. User:</dt>
+            <dd>{{control.responsibleUser.display_name}}</dd>
+            <dt>Tags:</dt>
+            <dd>{{control.tag.join(", ")}}</dd>
+          </dl>
+        </div>
+        <div id="cluster_info" class="col-lg-7">
+          <dl class="dl-horizontal">
+            <dt>Category:</dt>
+            <dd>{{control.category}}</dd>
+            <dt>Effective From:</dt>
+            <dd>{{control.effectiveFrom| date:'dd-MMM-yyyy'}}</dd>
+            <dt>Effective To:</dt>
+            <dd>{{control.effectiveTo| date:'dd-MMM-yyyy'}}</dd>
+            <dt>Version:</dt>
+            <dd>{{control.version}}</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <dl class="dl-horizontal">
+            <dt>Description</dt>
+            <dd ng-bind-html="descriptionHtmlSafe"></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ibox">
+    <div class="ibox-content">
+      <div class="panel blank-panel ui-tab">
+        <uib-tabset>
+          <uib-tab heading="Impacted Risks">
+            <div class="wrapper wrapper-content" ng-show="isLoadingControlRecords">
+              <div class="text-center">
+                <h2>Loading Impact Risks....</h2>
+                <div class="block-spinner"></div>
+              </div>
+            </div>
+
+            <div ng-hide="isLoadingControlRecords">
+              <table class="table table-bordered table-hover table-control-records" ng-show="impactedRecords">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th class="text-center">Consequence</th>
+                    <th class="text-center">Likelihood</th>
+                    <th class="text-center">Rating</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="linked-row" ng-repeat="record in impactedRecords" ui-sref="governance-record.view({recordId: record._id})">
+                    <td class="text-nowrap">{{record._id}}</td>
+                    <td>{{record.title}}</td>
+                    <td>{{record.category}}</td>
+                    <td>{{record.status}}</td>
+                    <td class="text-center">{{record.overallAssessment.controlledConsequence}}</td> 
+                    <td class="text-center">{{record.overallAssessment.controlledLikelihood}}</td> 
+                    <td class="text-center">{{record.overallAssessment.controlledRating}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div ng-hide="impactedRecords"><p class="empty-list">No impacted risks yet</p></div>
+            </div>
+          </uib-tab>
+          <uib-tab heading="Comments">
+            <item-comments allowed="rolePermissions.control.comment"></item-comments>
+          </uib-tab>
+          <uib-tab heading="Files">
+            <item-attachments></item-attachments>
+          </uib-tab>
+          <uib-tab heading="Associated Action Items">
+            <related-actions-items></related-actions-items>
+          </uib-tab>
+          <!--@TODO: Add watchers to action item detail-->
+          <uib-tab heading="Change History">
+            <div ng-controller="HistoryController as history">
+              <div class="row history-changes">
+
+                <div class="history-change" ng-repeat="historyItem in entityChangesList">
+                  <div id="note-{{$index + 1}}">
+                    <p>#{{$index + 1}} - by <a href ui-sref="member.view({userId: change.changedBy._id})" target="_blank">{{historyItem.changedBy.display_name}}</a> on {{historyItem.createdAt| date:'dd-MMM-yyyy'}}</p>
+                    <ul>
+                      <li ng-show="historyItem.changes.title">
+                        <strong>Title</strong>: <span ng-bind-html="historyItem.changes.title | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.status">
+                        <strong>Status</strong>: <span ng-bind-html="historyItem.changes.status | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.effectiveFrom">
+                        <strong>EffectiveFrom Date</strong>: <span ng-bind-html="historyItem.changes.effectiveFrom | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.effectiveTo">
+                        <strong>EffectiveTo Date</strong>: <span ng-bind-html="historyItem.changes.effectiveTo | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.responsibleOrg">
+                        <strong>Responsible Org</strong>: <span ng-bind-html="historyItem.changes.responsibleOrg | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.responsibleUser">
+                        <strong>Responsible User</strong>:
+                        <span ng-bind-html="historyItem.changes.responsibleUser | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.category">
+                        <strong>Category</strong>: <span ng-bind-html="historyItem.changes.category | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.tag">
+                        <strong>Tags</strong>:
+                        <ul>
+                          <li ng-repeat="tag in historyItem.changes.tag"><span ng-bind-html="tag | to_trusted"></span></li>
+                        </ul>
+                      </li>
+                      <li ng-show="historyItem.changes.description">
+                        <strong>description</strong>: <span ng-bind-html="historyItem.changes.description | to_trusted"></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div ng-hide="entityChangesList">
+                  <p class="empty-list">No history changes</p>
+                </div>
+              </div>
+            </div>
+          </uib-tab>
+        </uib-tabset>
+      </div>
+    </div>
+  </div>
+</div>

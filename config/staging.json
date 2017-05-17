@@ -1,0 +1,22 @@
+{
+  "application" : "grc",
+  "secrets": {
+    "session": "secret"
+  },
+  "mongo": {
+    "uri": "mongodb://localhost/grc-staging"
+  },
+  "s3" : {
+    "bucket" : "<generic file bucket>"
+  },
+  "ses" : {
+    "apiVersion" : "2010-12-01"
+  },
+  "siteUrl": "<siteUrl>",
+  "email": {
+    "sender": "noreply@riski.io"
+  },
+  "userRoles": ["guest", "user", "admin"],
+  "seedDB": true,
+  "httpRedirect" : true
+}

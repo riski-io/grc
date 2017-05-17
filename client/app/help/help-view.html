@@ -1,0 +1,16 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2 class="pull-left" >{{helpPage.title}}</h2>
+    <button class="btn btn-primary pull-right m-t-sm" ui-sref="help.edit({id : helpPage._id})">Edit</button>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content help-content">
+	<div class="row">
+		<div class="ibox">
+		  <div class="ibox-content">
+		  	<div ng-bind-html="trustAsHtml(helpPage.content)"></div>
+		  </div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,31 @@
+
+<blockquote >
+    <h3 class="text-primary">Reviews</h3>
+</blockquote>
+
+<h4> Organisation Unit : {{orgUnit.orgName}}</h4>
+
+<table class="table table-bordered table-striped">
+    <thead> 
+      <th>ID</th>
+      <th>Title</th>
+      <th>Hosted By</th>
+      <th>Scheduled By</th>
+      <th>Type</th>
+      <th>Status</th>
+      <th>Updated</th>
+    </thead> 
+    <tbody> 
+        {{#items}} 
+        <tr> 
+            <td class="text-nowrap"><a href="{{site_url}}/review/{{_source.id}}" target="_blank">{{_source.id}}</a></td> 
+            <td>{{_source.title}}</td> 
+            <td>{{_source.orgUnitName}}</td> 
+            <td>{{_source.responsibleUserName}}</td> 
+            <td>{{_source.category}}</td> 
+            <td>{{_source.status}}</td> 
+            <td>{{formatDate _source.updatedAt 'short'}}</td>
+        </tr> 
+        {{/items}} 
+    </tbody> 
+</table> 

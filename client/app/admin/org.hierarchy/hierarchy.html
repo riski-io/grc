@@ -1,0 +1,94 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2>Admin: Permissions</h2>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="col-sm-7">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title clearfix">
+        <h5>Admin: Organization Hierarchy</h5>
+      </div>
+      <div class="ibox-content hierarchy" ng-hide="isLoading">
+        <a href="javascript:void(0);" class="btn btn-xs btn-primary" ng-click="newSubItem()"><span class="fa fa-plus"></span> New Organization Unit</a>
+        <!-- Nested list template -->
+        <script type="text/ng-template" id="items_renderer.html">
+          <div ui-tree-handle class="tree-node tree-node-content">
+            <a class="btn btn-success btn-xs" ng-if="item.items && item.items.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-chevron-right': collapsed, 'fa-chevron-down': !collapsed}"></span></a>
+            {{item.orgName}}
+            <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeItem(this)"><span class="fa fa-remove"></span></a>
+            <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)"><span class="fa fa-plus"></span></a>
+            <a class="pull-right btn btn-info btn-xs" data-nodrag ng-click="editItem(this)"><span class="fa fa-pencil-square"></span></a>
+            <a class="pull-right btn btn-info btn-xs" data-nodrag ng-click="viewItem(this)"><span class="fa fa-envelope"></span></a>
+          </div>
+          <ol ui-tree-nodes="options" ng-model="item.items" ng-class="{hidden: collapsed}">
+            <li ng-repeat="item in item.items" ui-tree-node ng-include="'items_renderer.html'"></li>
+          </ol>
+        </script>
+        <div ui-tree="options">
+          <ol ui-tree-nodes ng-model="list" >
+            <li ng-repeat="item in list" ui-tree-node ng-include="'items_renderer.html'"></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-5" ng-if="orgUnitToView">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title clearfix">
+        <h2>{{orgUnitToView.orgName}}</h2>
+      </div>
+      <div class="ibox-content hierarchy" ng-hide="isLoading">
+        <div class="alert alert-danger alert-dismissible" role="alert" data-ng-if="errorMessages">
+          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span></button>
+            <strong ng-bind-html="errorMessages"></strong>
+        </div>
+        <div class="alert alert-success alert-dismissible" role="alert" data-ng-if="warnings">
+          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span></button>
+            <strong ng-bind-html="warnings"></strong>
+        </div>
+        <h3>Invite Users</h3>
+        <form name="inviteForm" ng-submit="inviteUser(orgUnitToView.orgUnitId)">
+          <div class="form-group">
+            <label>Recipients</label>
+             <div class="input-group">
+              <input type="text" class="form-control input-lg" id="userSearch" name="userSearch" placeholder="Type first few characters of a surname" typeahead="user as (user.display_name +'('+ user.email+')') for user in searchUsers($viewValue)" ng-model="selectedUser" autocomplete="off" typeahead-on-select="setReceipient(selectedUser)" required ng-readonly="loading" typeahead-wait-ms="500">
+              <span class="input-group-addon"><i class="fa fa-cog fa-2x fa-spin" ng-show="loading"></i></span>
+              </div>
+              <div ng-show="submitted">
+                  <div ng-show="invitationForm.userSearch.$error.required" class="text-danger">This field is required</div>
+                  <div ng-show="invitationForm.userSearch.$error.multipleEmails" class="text-danger">Please enter valid email addresses</div>
+              </div>
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <select class="form-control" ng-model="invitation.role" ng-options="role.key as role.value for role in roles" required></select>
+          </div>
+          <button class="btn btn-md btn-primary" type="submit" ng-disabled="!selectedUser.email">Invite</button>
+        </form>
+        <div class="row">
+          <div class="col-xs-6">
+            <h3 class="bg-primary p10">Managers</h3>
+            <span ng-show="!orgUnitToView.managerList.length">None</span>
+            <p ng-repeat="user in orgUnitToView.managerList">
+              {{user.display_name}}
+              <a class="fa fa-times pull-right text-danger" ng-click="removeUser(orgUnitToView.orgUnitId, user._id, 'manager')"></a>
+            </p>
+          </div>
+          <div class="col-xs-6">
+            <h3 class="bg-primary p10">Members</h3>
+            <span ng-show="!orgUnitToView.memberList.length">None</span>
+            <p ng-repeat="user in orgUnitToView.memberList">
+              {{user.display_name}}
+              <a class="fa fa-times pull-right text-danger" ng-click="removeUser(orgUnitToView.orgUnitId, user._id, 'member')"></a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

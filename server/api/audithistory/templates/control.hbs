@@ -1,0 +1,52 @@
+<ul>
+  {{#if AuditHistory.changes.title}}
+  <li>
+    <strong>Title</strong>: {{{AuditHistory.changes.title}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.status}}
+  <li>
+    <strong>Status</strong>: {{{AuditHistory.changes.status}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.effectiveFrom}}
+  <li>
+    <strong>EffectiveFrom Date</strong>: {{{AuditHistory.changes.effectiveFrom}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.effectiveTo}}
+  <li>
+    <strong>EffectiveTo Date</strong>: {{{AuditHistory.changes.effectiveTo}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.responsibleOrg}}
+  <li>
+    <strong>Responsible Org</strong>: {{{AuditHistory.changes.responsibleOrg}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.responsibleUser}}
+  <li>
+    <strong>Responsible User</strong>: {{{AuditHistory.changes.responsibleUser}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.category}}
+  <li>
+    <strong>Category</strong>: {{{AuditHistory.changes.category}}}
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.tag}}
+  <li>
+    <strong>Tags</strong>:
+    <ul>
+      {{#each AuditHistory.changes.tag}}
+      <li>{{{@this}}}</li>
+      {{/each}}
+    </ul>
+  </li>
+  {{/if}}
+  {{#if AuditHistory.changes.description}}
+  <li>
+    <strong>description</strong>: {{{AuditHistory.changes.description}}}
+  </li>
+  {{/if}}
+</ul>

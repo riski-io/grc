@@ -1,0 +1,47 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2>Admin: Email Templates</h2>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="ibox">
+    <div class="ibox-content clearfix">
+      <div class="clearfix" ng-include="'app/alert.html'"></div>
+      <form ng-submit="save()">
+          <div class="form-group">
+            <label class="control-label" for="value">Key</label>
+            <input id="value" type="text" ng-model="template.key" class="form-control" ng-disabled="isEdit">
+          </div>
+          <div class="form-group">
+            <label class="control-label" for="value">Trigger</label>
+            <input id="value" type="text" ng-model="template.trigger" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="control-label" for="value">Subject Line</label>
+            <input id="value" type="text" ng-model="template.subject" class="form-control" ng-change="changeSubject()">
+            <div class="alert alert-danger" ng-if="compileSubjectError">Can't compile subject: {{compileSubjectError}}</div>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Email Body</label>
+            <summernote config="options" on-change="change(contents)" ng-model="template.body"></summernote>
+            <div class="alert alert-danger" ng-if="compileTemplateError">Can't compile template: {{compileTemplateError}}</div>
+            <div class="alert alert-info" ng-if="compileTemplateError === null">Template compiled successfully</div>
+            <div><i ng-non-bindable>Note: Template engine HTML-escapes values returned by a {{expression}}. If you don't want template engine to escape a value, use the "triple-stash": {{{expression}}}</i></div>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Allowed Variables</label>
+            <div>
+              <div class="template-variables">
+                <button ng-repeat="variable in variables track by $index" type="button" class="button btn-xs btn-white" tooltip="{{variable}}" ng-click="addVariable(variable)">{{variable}}</button>
+              </div>
+            </div>
+          </div>
+        <div class="pull-right clearfix">
+          <button type="submit" class="btn btn-primary" ng-disabled="compileSubjectError || compileTemplateError">Save</button>
+          <a href="javascript:void(0);" class="btn btn-white" ui-sref="admin.templates">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

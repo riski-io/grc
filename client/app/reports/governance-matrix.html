@@ -1,0 +1,104 @@
+<div class="modal fade" id="heirarchy">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <div ui-tree="options" data-drag-enabled="false">
+          <ol ui-tree-nodes ng-model="orgTree">
+            <li ng-repeat="item in orgTree" ui-tree-node ng-include="'app/tree.html'" collapsed="false"></li>
+          </ol>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row wrapper border-bottom white-bg">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <div class="form-inline list-filter">
+        <div class="form-group">
+          <label for="orgUnit"><h2>
+            Risk matrix per consequence for <a class="underline" data-toggle="modal" data-target="#heirarchy">{{orgUnit.orgName}}</a>
+          </h2> </label>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-control m-t-xs ml20"> <input type="checkbox" ng-model="includeChildren" ng-change="filter()"/>
+            <span> Include children</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="wrapper wrapper-content">
+  <div class="ibox-content">
+
+    <div class="row noprint" ng-hide="initialised">
+      <div class="col-sm-12 text-center">
+        <h3>Collecting and processing data... </h3>
+        <div class="block-spinner"></div>
+      </div>
+    </div>
+
+    <div class="row noprint" ng-show="initialised">
+      <div class="col-sm-4 col-sm-offset-8">
+        <p class="pull-right">
+          <i download-pdf="records" type="risk-matrix" org-unit="orgUnit" matrix="svgId" tooltip-placement="top" tooltip="save page as pdf" class="fa fa-file-pdf-o fa-3x act-icon"></i>
+          <i ng-click="exportAsCSV()" tooltip-placement="top" tooltip="save page as csv" class="fa fa-file-excel-o fa-3x act-icon"></i>
+          <i save-image="svgId" table-config="tableConfig" class="fa fa-file-image-o fa-3x act-icon" tooltip="save matrix as image"></i>
+          <i print-table tooltip-placement="top" tooltip="print table" class="fa fa-print fa-3x act-icon"></i>
+        </p>
+      </div>
+    </div>
+
+    <div class="row noprint" ng-show="initialised">
+
+      <div class="form-group col-md-3">
+        <label for="filterCategory">Category</label>
+        <select chosen disable-search="true" name="filterCategory" id="filterCategory" class="form-control" ng-model="filters.category" required ng-options="riskCategory.code as riskCategory.title for riskCategory in enums.risk_category">
+          <option value="">All</option>
+        </select>
+      </div>
+
+      <div class="form-group col-md-3">
+        <label for="filterReviewType">Review Type</label>
+        <select chosen disable-search="true" name="filterReviewType" id="filterReviewType" class="form-control" ng-model="filters.reviewType" required ng-options="reviewType.code as reviewType.title for reviewType in enums.review_type">
+            <option value="">All</option>
+        </select>
+      </div>
+      <div class="form-group col-md-3">
+        <label for="filterReviewType">Status</label>
+        <select chosen disable-search="true" name="filterStatus" id="filterStatus" class="form-control" ng-model="filters.status" required ng-options="recordStatus.code as recordStatus.title for recordStatus in enums.record_status">
+            <option value="">All</option>
+        </select>
+      </div>
+      <div class="form-group col-md-3">
+        <label>Assessment</label>
+        <br>
+        <div class="btn-group btn-group-justified" ng-disabled="development">
+          <label class="btn btn-white" ng-model="filters.assessment" uib-btn-radio="'initialAssessment'" uncheckable>Initial</label>
+          <label class="btn btn-white" ng-model="filters.assessment" uib-btn-radio="'controlledAssessment'" uncheckable>Controlled</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row noprint" ng-show="initialised">
+      <div class="col-sm-12 text-center" style="margin:15px;">
+        <button class="btn btn-primary" ng-click="doFilter()" ng-disabled="!filtersChanged">Apply filters</button>
+      </div>
+    </div>
+
+    <div class="row" ng-show="initialised && svgId === 'riskMatrix'">
+      <risk-matrix dashboard="false" class="col-sm-6 col-sm-offset-3" risks="risks" risk-type="{{filters.assessment}}" on-risk-click="goToRecord"></risk-matrix>
+    </div>
+  </div>
+</div>
+</div>

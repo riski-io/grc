@@ -1,0 +1,172 @@
+@import "../bower_components/font-awesome/scss/font-awesome.scss";
+@import "../bower_components/bootstrap/dist/css/bootstrap";
+
+/**
+ *Font Awesome Fonts
+ */
+
+@font-face {
+    font-family: 'FontAwesome';
+    src: url('../bower_components/font-awesome/fonts/fontawesome-webfont.eot?v=4.1.0');
+    src: url('../bower_components/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.1.0') format('embedded-opentype'),
+    url('../bower_components/font-awesome/fonts/fontawesome-webfont.woff?v=4.1.0') format('woff'),
+    url('../bower_components/font-awesome/fonts/fontawesome-webfont.ttf?v=4.1.0') format('truetype'),
+    url('../bower_components/font-awesome/fonts/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+div#spinner{
+    display: none;
+    width:120px;
+    height: 120px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    text-align:center;
+    padding:10px;
+    margin-left: -50px;
+    margin-top: -50px;
+    z-index: 99999;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #fff;
+}
+#spinner .fa{
+  margin-top : 20px;
+  font-size : 50px;
+  color : #2f4050;
+}
+.spinner-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  filter: alpha(opacity=50);
+  opacity: .2;
+  z-index: 9999;
+}
+.dl-horizontal dd{
+  min-height : 20px;
+}
+.block-spinner{
+    width: 65px;
+    height: 65px;
+    margin: 0 auto;
+    background: url("../assets/images/spinner.gif") no-repeat 0 0;
+}
+.migration-upload{
+  color : #fff;
+  font-size : 35px;
+  position : absolute;
+  top : 100px;
+  margin : 0 auto;
+}
+.search .dropdown-menu{
+  max-height : 300px;
+  overflow-y : auto;
+}
+
+#userSearch.form-control{
+  border-right: 0;
+}
+div.dataTables_paginate{
+  display : none;
+}
+.member-list div.dataTables_paginate{
+  display : block;
+}
+.dataTables_info{
+  display : none;
+}
+
+div.dataTables_custom_length label {
+  float: left;
+  text-align: left;
+  font-weight: normal;
+  width : 200px;
+}
+
+div.dataTables_custom_length label span{
+  float : left;
+  display : inline-block;
+  margin-top : 5px;
+}
+
+div.dataTables_custom_length label select{
+  float : left;
+  width : 75px;
+  margin : 0 5px;
+}
+
+.capitalize{
+  text-transform: capitalize;
+}
+.facet-filter .folder-list li{
+  border-bottom : none;
+}
+
+.nowrap{
+  white-space: nowrap;
+}
+
+label.checkbox-control {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  font-weight: normal;
+  input[type=checkbox] {
+    position: absolute;
+    left: -20px;
+    top: 0;
+    & + span {
+      position: relative;
+      padding: 0 0 0 20px;
+
+      &:before {
+        content: "";
+        left: 0;
+        top: 2px;
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: #fff;
+        border: 1px solid #d3cfc8;
+      }
+    }
+    &:hover + span:before {
+      border: 2px solid #2c8f7b;
+    }
+    &:checked + span:after {
+      font-family: "FontAwesome";
+      content: "\f00c";
+      font-size: 8px;
+      color: #fff;
+      background-color: #2c8f7b;
+
+      position: absolute;
+      left: 0;
+      top: 2px;
+
+      height: 16px;
+      width: 16px;
+      text-align: center;
+      line-height: 16px;
+    }
+  }
+}
+
+// Component styles are injected through gulp
+// injector
+@import 'account/login/login.scss';
+@import 'admin/admin.scss';
+@import 'admin/email.template/template.scss';
+@import 'admin/org.hierarchy/hierarchy.scss';
+@import 'admin/reference/reference.scss';
+@import 'admin/severity.matrix/matrix.scss';
+@import 'main/main.scss';
+@import 'main/overwrite.scss';
+@import 'reports/reports.scss';
+// endinjector

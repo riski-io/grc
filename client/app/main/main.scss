@@ -1,0 +1,191 @@
+.footer {
+    padding: 10px 25px;
+    margin-top: 70px;
+    border-top: 1px solid #E5E5E5;
+}
+.table-actions {
+    border-bottom: 1px solid #e7eaec;
+}
+.table .actions {
+    text-align: right;
+    width: 1%;
+    white-space: nowrap;
+}
+.table .actions .fa{
+    font-size: 120%;
+}
+//Overwrite styles from theme
+/*Chosen*/
+
+body [class*="col-"] .chosen-container {
+    width: 100%!important;
+}
+body .chosen-container-single .chosen-single div {
+    width: 16px !important;
+}
+body .chosen-container-single .chosen-single div b {
+    background-position: 0 5px;
+}
+body .chosen-container-active.chosen-with-drop .chosen-single div b {
+    background-position: -18px 5px;
+}
+/*Summernote*/
+body .note-editor {
+    border: 1px solid #e5e6e7;
+}
+
+// Fix for bootstrap 3.3.x
+.modal-backdrop {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+}
+.jsondiffpatch-textdiff-line-number::after {
+    content: ",";
+}
+.jsondiffpatch-textdiff-location {
+    color: #bbb;
+}
+ul.jsondiffpatch-textdiff {
+    list-style-type: none;
+}
+.jsondiffpatch-textdiff-line {
+    display: inline;
+}
+.jsondiffpatch-deleted .jsondiffpatch-property-name,
+.jsondiffpatch-deleted pre,
+.jsondiffpatch-modified .jsondiffpatch-left-value pre,
+.jsondiffpatch-textdiff-deleted {
+    background: none repeat scroll 0 0 #ffbbbb;
+    text-decoration: line-through;
+}
+.jsondiffpatch-added .jsondiffpatch-property-name,
+.jsondiffpatch-added .jsondiffpatch-value pre,
+.jsondiffpatch-modified .jsondiffpatch-right-value pre,
+.jsondiffpatch-textdiff-added {
+    background: none repeat scroll 0 0 #bbffbb;
+}
+.jsondiffpatch-textdiff-location {
+    color: #bbb;
+    display: inline-block;
+    min-width: 60px;
+}
+.print_friendly_tabs { display: none; } 
+@media print {
+    .noprint {
+        display: none;
+    }
+    .print_friendly_tabs { display: block; }
+    .change_history{
+        display: none;
+    }
+    .page-heading{
+        border-bottom: 0 !important;
+    }
+    #page-wrapper {
+        margin: 0
+    }
+    #main-content {
+        width: 100%;
+    }
+    #main-content:last-child {
+         page-break-after: auto;
+    }
+    html, body {
+        height: auto
+    }
+    #page-wrapper{
+        min-height : 200px;
+    }
+    .ui-tab.panel{
+        display : none;
+    }
+    table {
+        width: 80em;
+        page-break-inside:avoid;
+        page-break-after: avoid;
+    }
+    table th .fa , .btn{
+        display: none;
+    }
+    img {
+        max-width: 500px;
+    }
+    table td {
+     border-bottom:1px solid gray;
+    }
+    table tr {
+      page-break-inside: avoid;
+    }
+    // Avoid page breaks straight after a heading.
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        page-break-after: avoid;
+    }
+    p,
+    blockquote,
+    ul,
+    ol,
+    dl,
+    pre {
+        page-break-inside: avoid;
+    }
+
+    .progress{
+        background-color: #F5F5F5 !important;
+        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#F5F5F5', endColorstr='#F5F5F5')" !important;
+    }
+    .progress-bar{
+        display: block !important;
+        background-color: #1ab394 !important;
+        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#1ab394', endColorstr='#1ab394')" !important;
+    }
+
+    .progress, .progress > .progress-bar {
+        display: block !important;
+        -webkit-print-color-adjust: exact !important;
+
+        box-shadow: inset 0 0 !important;
+        -webkit-box-shadow: inset 0 0 !important;
+    }     
+}
+
+.highlighted-gray {
+  background-color: #C1FFC1 !important;
+}
+
+.highlighted-gray:hover {
+  background-color: #B4EEB4 !important;
+}
+
+.note-editor.note-frame{
+    border : 0;
+    border-radius : 0;
+}
+
+.folder-list{
+    padding : 0;
+}
+
+.hierarchy-browser.angular-ui-tree-handle{
+    background: transparent;
+    border: 1px solid #FBFBFB;
+    font-weight: normal;
+    padding: 0 10px;
+    cursor: auto;
+
+    .cell{
+        padding: 10px;
+    }
+}
+
+.nvd3.nv-noData{
+    font-weight: normal;
+    color: #676A93
+}

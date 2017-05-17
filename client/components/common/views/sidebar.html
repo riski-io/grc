@@ -1,0 +1,109 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul side-navigation class="nav" id="side-menu" ng-controller="SidebarCtrl as vm">
+            <li class="nav-header">
+                <div class="dropdown profile-element" ng-show="vm.currentUser" uib-dropdown>
+                    <a class="dropdown-toggle" uib-dropdown-toggle>
+                        <span class="clear">
+                            <span class="m-t-xs">
+                                <strong class="font-bold">{{vm.currentUser.display_name}}</strong>
+                         </span>
+                            <span class="text-muted text-xs block">{{vm.currentUser.role}} <b class="caret"></b></span>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu m-t-xs">
+                        <li><a href ui-sref="member.view({userId: vm.currentUser._id})">Profile</a></li>
+                        <li class="divider"></li>
+                        <li><a href ng-click="logout()">Logout</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li ng-class="{active: $state.includes('home.main')}" ng-hide="hideMenu">
+                <a ui-sref="home.main"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span></a>
+            </li>
+            <li ng-class="{active: $state.includes('reports')}" ng-hide="hideMenu">
+                <a href=""><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Reports</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" ng-class="{in: $state.includes('reports')}">
+                    <li ui-sref-active="active" ng-if="rolePermissions.gov_record.view"><a ui-sref="reports.governance_matrix">Governance Matrix</a></li>
+                    <li ui-sref-active="active"><a ui-sref="reports.risk-analytics">Risk Analytics</a></li>
+                    <!--<li ui-sref-active="active"><a ui-sref="reports.task_status">Task Status</a></li>-->
+                </ul>
+            </li>
+            <li ng-class="{active: $state.includes('review')}" ng-hide="hideMenu">
+                <a href=""><i class="fa fa-user-secret"></i> <span class="nav-label">Reviews</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" ng-class="{in: $state.includes('review')}">
+                    <li ui-sref-active="active" ng-if="rolePermissions.review.view"><a ui-sref="review.list">List reviews</a></li>
+                    <li ui-sref-active="active" ng-if="rolePermissions.review.create"><a ui-sref="review.new">New review</a></li>
+                </ul>
+            </li>
+            <li ng-class="{active: $state.includes('governance-record')}" ng-hide="hideMenu">
+                <a href=""><i class="fa fa-th-large"></i> <span class="nav-label">Records</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" ng-class="{in: $state.includes('governance-record')}">
+                    <li ui-sref-active="active" ng-if="rolePermissions.gov_record.view"><a ui-sref="governance-record.list_all">List records</a></li>
+                    <li ui-sref-active="active" ng-if="rolePermissions.gov_record.create"><a ui-sref="governance-record.new">New record</a></li>
+                </ul>
+            </li>
+            <li ng-class="{active: $state.includes('control')}" ng-hide="hideMenu">
+                <a href=""><i class="fa fa-laptop"></i> <span class="nav-label">Controls</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" ng-class="{in: $state.includes('control')}">
+                    <li ui-sref-active="active" ng-if="rolePermissions.control.view"><a ui-sref="control.list_all">List controls</a></li>
+                    <li ui-sref-active="active" ng-if="rolePermissions.control.create"><a ui-sref="control.new">New control</a></li>
+                </ul>
+            </li>
+            <li ng-class="{active: $state.includes('action-item')}" ng-hide="hideMenu">
+                <a href=""><i class="fa fa-tasks"></i> <span class="nav-label">Action Items</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" ng-class="{in: $state.includes('action-item')}">
+                    <li ui-sref-active="active" ng-if="rolePermissions.action_item.view"><a ui-sref="action-item.list">List actions items</a></li>
+                    <li ui-sref-active="active" ng-if="rolePermissions.action_item.create"><a ui-sref="action-item.new">New action item</a></li>
+                </ul>
+            </li>
+            <li ng-class="{active: $state.includes('compliance-form')}" ng-hide="hideMenu">
+                <a href=""><i class="fa fa-file-text"></i> <span class="nav-label">Compliance Form</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" ng-class="{in: $state.includes('compliance-form')}">
+                    <li ui-sref-active="active"><a ui-sref="compliance-form.list">Surveys</a></li>
+                    <li ui-sref-active="active"><a ui-sref="compliance-form.new">New Survey</a></li>
+                </ul>
+            </li>
+            <li ng-class="{active: $state.includes('member')}" ng-show="authService.isManager || authService.isAdmin">
+                <a href><i class="fa fa-users"></i> <span class="nav-label">Members</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" ng-class="{in: $state.includes('member')}">
+                    <li ui-sref-active="active"><a ui-sref="member.list_all">List members</a></li>
+                    <li ui-sref-active="active"><a ui-sref="member.new">New member</a></li>
+                    <li ui-sref-active="active"><a ui-sref="member.request">Pending Requests</a></li>
+                </ul>
+            </li>
+
+            <li ng-class="{active: $state.includes('admin')}" ng-show="authService.isAdmin">
+                <a href=""><i class="fa fa-wrench"></i> <span class="nav-label">Admin</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" ng-class="{in: $state.includes('admin')}">
+                    <!-- <li ui-sref-active="active"><a href="/apidocs" target="_blank">API Doc</a></li> -->
+                    <!-- <li ui-sref-active="active"><a ui-sref="admin.settings">General settings</a></li> -->
+                    <li ui-sref-active="active"><a ui-sref="admin.reference">Reference data</a></li>
+                    <li ui-sref-active="active"><a ui-sref="admin.matrix">Severity Matrix</a></li>
+                    <li ui-sref-active="active"><a ui-sref="admin.hierarchy">Org Hierarchy</a></li>
+                    <li ui-sref-active="active"><a ui-sref="admin.permissions">Permissions</a></li>
+                    <li ui-sref-active="active"><a ui-sref="admin.templates">Email Templates</a></li>
+                    <!-- <li ui-sref-active="active"><a ui-sref="admin.kpis">KPIs</a></li> -->
+                    <li ng-class="{active: $state.includes('compliance-form-template')}" ng-hide="hideMenu">
+                        <a href=""><span class="nav-label">Compliance Form Templates</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level" ng-class="{in: $state.includes('compliance-form-template')}">
+                            <li ui-sref-active="active"><a ui-sref="compliance-form-template.list">List Templates</a></li>
+                            <li ui-sref-active="active"><a ui-sref="compliance-form-template.new">New Template</a></li>
+                        </ul>
+                    </li>
+                    <!-- <li ng-class="{active: $state.includes('mapping') || $state.includes('migration')}">
+                        <a href="">Data Migrations<span class="fa arrow"></span></a>
+                        <ul class="nav nav-third-level">
+                            <li ui-sref-active="active"><a ui-sref="admin.migration">Bulk Data</a></li>
+                            <li ui-sref-active="active"><a ui-sref="admin.mapping">Data Mappings</a></li>
+                        </ul>
+                    </li> -->
+                </ul>
+            </li>
+            <li ng-class="{active: $state.includes('help')}" ng-show="authService.isAdmin">
+                <a ui-sref="help.list"><i class="fa fa-question"></i> <span class="nav-label">Help</span> <span class="fa arrow"></span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
