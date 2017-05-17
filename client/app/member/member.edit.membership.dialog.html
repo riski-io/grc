@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="cancel()">&times;</button>
+  <h4 class="modal-title">
+    <span class="fa fa-pencil-square"></span> Edit membership
+  </h4>
+</div>
+<form ng-submit="updateMembershipRole()">
+  <div class="modal-body">
+    <div ng-include="'app/alert.html'"></div>
+    <dl class="dl-horizontal">
+      <dt><strong>User:</strong></dt>
+      <dd>{{user.display_name}}</dd>
+      <dt><strong>Org Unit:</strong></dt>
+      <dd>{{orgUnit.orgName}}</dd>
+      <dt><label class="control-label" for="userRole">Role</label></dt>
+      <dd>
+        <div class="form-group">
+          <select name="userRole" id="userRole" class="form-control" ng-model="orgUnit.newRole" ng-init="orgUnit.newRole = orgUnit.role" required="">
+            <option value="member" selected>member</option>
+            <option value="manager">manager</option>
+          </select>
+        </div>
+      </dd>
+    </dl>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-white" ng-click="cancel()">Cancel</button>
+  </div>
+</form>

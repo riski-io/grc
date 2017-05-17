@@ -1,0 +1,330 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2 class="pull-left">Governance record {{record._id}} </h2>
+    <div class="page-actions noprint" ng-show="record._id">
+      <i tooltip="Export as PDF" class=" fa-2x act-icon fa fa-file-pdf-o" download-pdf="record" type="governance-record-details"></i>
+      <i tooltip="Print page" print-page print-element-id="main-content" class="fa fa-print fa-2x act-icon"></i>
+      <a ng-if="rolePermissions.gov_record.delete"tooltip-placement="bottom" tooltip="Remove this record" class="btn btn-xs btn-primary" href ng-click="removeGovernanceRecord(record._id);" ><i class="fa fa-remove fa-fw"></i> delete</a>
+      <a ng-if="rolePermissions.gov_record.edit" tooltip-placement="bottom" tooltip="Edit this record" class="btn btn-xs btn-primary" href ui-sref="governance-record.edit({recordId: record._id})"><i class="fa fa-pencil-square-o fa-fw"></i> edit</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-show="isLoading">
+  <div class="text-center">
+    <h2>Loading....</h2>
+    <div class="block-spinner"></div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-hide="isLoading">
+  <div class="row">
+    <div class="col-sm-12 ibox float-e-margins">
+      <div class="ibox-content">
+        <!-- content -->
+        <div class="row m-b-md">
+          <div class="col-md-8 col-lg-9">
+            <h2>{{record.title}}</h2>
+          </div>
+          <div class="col-md-4 col-lg-3 record-review-type text-info" ng-show="record.reviewType">
+            <h3>Review type: {{record.reviewType}}</h3>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-5">
+            <dl class="dl-horizontal">
+              <dt>Related Review:</dt>
+              <dd><a href ui-sref="review.view({reviewId:record.identifiedAt._id})">{{record.identifiedAt.title}}</a></dd>
+              <dt>Org. Unit:</dt>
+              <dd>{{record.responsibleOrg.orgName}}</dd>
+              <dt>Resp. Officer:</dt>
+              <dd>{{record.responsibleUser.display_name}}</dd>
+            </dl>
+          </div>
+          <div class="col-lg-7">
+            <dl class="dl-horizontal">
+              <dt>Reviewer:</dt>
+              <dd>{{record.nominatedReviewer.display_name}}</dd>
+              <dt>Version:</dt>
+              <dd>{{record.version}}</dd>
+              <dt>Status:</dt>
+              <dd class="capitalize">{{record.status}}</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <dl class="dl-horizontal">
+              <dt>Description: <span tooltip-append-to-body="true" tooltip="A brief statement that includes sources, events, causes, and impacts of the risk or opportunity." class="tooltip-icon"><i class="fa fa-lg fa-info-circle"></i></span></dt>
+              <dd ng-bind-html="htmlSafe.description"></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="ibox" ng-show="record.externalFactors">
+        <div class="ibox-title">
+          <h3>External factors</h3>
+        </div>
+        <div class="ibox-content">
+          <div ng-repeat="factor in record.externalFactors track by $index">
+            <div class="container">
+              <div class="row external-factor-row">
+                <div class="col-sm-1">
+                  <h4>Factor {{$index + 1}}</h4>
+                </div>
+                <div class="col-sm-6">
+                  <strong>Description</strong><br>
+                  <div ng-bind-html="htmlSafe.externalFactors[$index]"></div>
+                </div>
+                <div class="col-sm-3">
+                  <strong>Assessments <a href tooltip="Click to see Legend" ng-click="showLegend('external_factors', factor.trend)"><i class="fa fa-lg fa-info-circle"></i></a></strong><br>
+                  {{factor.trend}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ibox" ng-show="record.assessment">
+        <div class="ibox-title">
+          <h3>Risk category and Internal Control</h3>
+        </div>
+        <div class="ibox-content">
+          <div>
+            <table class="table table-bordered table-record-risks">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th class="text-center">Impact, $ Millions (AUD)</th>
+                  <th class="text-center">Consequence</th>
+                  <th class="text-center">Likelihood</th>
+                  <th class="rating-column text-center">Rating</th>
+                </tr>
+              </thead>
+              <tbody ng-repeat="risk in record.assessment track by $index" ng-class-odd="'odd'" ng-class-even="'even'">
+                <tr>
+                  <td ng-show="risk.controls" rowspan="3">{{$index + 1}}</td>
+                  <td ng-show="risk.controls" rowspan="3">{{risk.category}} <a href tooltip="Click to see Legend" ng-click="showLegend('risk_category', risk.category)"><i class="fa fa-lg fa-info-circle"></i></a></td>
+                  <td ng-hide="risk.controls">{{$index + 1}}</td>
+                  <td ng-hide="risk.controls">{{risk.category}} <a href tooltip="Click to see Legend" ng-click="showLegend('risk_category', risk.category)"><i class="fa fa-lg fa-info-circle"></i></a></td>
+                  <td ng-bind-html="htmlSafe.risk[$index]"></td>
+                  <td class="text-center">{{risk.initialAssessment.cost| currency}} M</td>
+                  <td class="text-center">{{risk.initialAssessment.consequence}} <a href tooltip="Click to see Legend" ng-click="showRiskMatrixLegend(risk.category, risk.initialAssessment.consequence)"><i class="fa fa-lg fa-info-circle"></i></a></td>
+                  <td class="text-center">{{risk.initialAssessment.likelihood}} <a href tooltip="Click to see Legend" ng-click="showLegend('risk_likelihood', risk.initialAssessment.likelihood)"><i class="fa fa-lg fa-info-circle"></i></a></td>
+                  <td class="text-center" rating-style="{{risk.initialAssessment.rating}}">{{risk.initialAssessment.rating}}</td>
+                </tr>
+                <tr ng-show="risk.controls">
+                  <td colspan="5" class="record-controls-row">
+                    <table class="table table-bordered table-record-controls">
+                      <tr ng-repeat="ctrl in risk.controls track by $index" ng-if="ctrl.control">
+                        <td><a ui-sref="control.view({ controlId: ctrl.control._id})" target="_blank">{{ctrl.control.title}}</a></td>
+                        <td width="25%">{{ctrl.effectiveness}}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr ng-show="risk.controlledAssessment && risk.controls">
+                  <th>Controlled assessment</th>
+                  <td class="text-center">{{risk.controlledAssessment.cost| currency}}</td>
+                  <td class="text-center">{{risk.controlledAssessment.consequence}}</td>
+                  <td class="text-center">{{risk.controlledAssessment.likelihood}}</td>
+                  <td class="text-center" rating-style="risk.controlledAssessment.rating">{{risk.controlledAssessment.rating}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- end content -->
+      </div>
+      <div class="ibox" ng-show="record.overallAssessment">
+        <div class="ibox-title">
+          <h5>Overall Ratings</h5>
+        </div>
+        <div class="ibox-content">
+          <div class="form-horizontal">
+            <div class="form-group">
+              <label class="col-sm-2 control-label"><br>Cost</label>
+              <div class="col-sm-3">
+                <label>Initial</label>
+                <input type="text" class="form-control" value="{{record.overallAssessment.initialCost| currency}} M" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label>Current</label>
+                <input type="text" class="form-control" value="{{record.overallAssessment.controlledCost| currency}} M" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label>Target</label>
+                <input type="text" class="form-control" value="{{record.overallAssessment.targetCost| currency}} M" disabled>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Risk</label>
+              <div class="col-sm-3">
+                <label class="visible-xs">Initial</label>
+                <input type="text" class="form-control" rating-style="record.overallAssessment.initialRating" value="{{record.overallAssessment.initialRating}}" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label class="visible-xs">Current</label>
+                <input type="text" class="form-control" rating-style="record.overallAssessment.controlledRating" value="{{record.overallAssessment.controlledRating}}" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label class="visible-xs">Target</label>
+                <input type="text" class="form-control" rating-style="record.overallAssessment.targetRating" value="{{record.overallAssessment.targetRating}}" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 ibox float-e-margins">
+      <div class="ibox-content">
+        <div class="panel blank-panel ui-tab">
+          <uib-tabset>
+            <uib-tab heading="Comments">
+              <item-comments allowed="rolePermissions.gov_record.comment"></item-comments>
+            </uib-tab>
+            <uib-tab heading="Associated Action Items">
+              <related-actions-items></related-actions-items>
+            </uib-tab>
+            <uib-tab heading="Change History">
+              <div ng-controller="HistoryController as history">
+                <div class="ibox-content history-changes">
+
+                  <div class="history-change" ng-repeat="historyItem in entityChangesList">
+                    <div id="note-{{$index + 1}}">
+                      <p>#{{$index + 1}} - by <a href ui-sref="member.view({userId: change.changedBy._id})" target="_blank">{{historyItem.changedBy.display_name}}</a> on {{historyItem.createdAt| date:'dd-MMM-yyyy'}}</p>
+                      <ul>
+                        <li ng-show="historyItem.changes.title">
+                          <strong>Title</strong>: <span ng-bind-html="historyItem.changes.title | to_trusted"></span>
+                        </li>
+                        <li ng-show="historyItem.changes.status">
+                          <strong>Status</strong>: <span ng-bind-html="historyItem.changes.status | to_trusted"></span>
+                        </li>
+                        <li ng-show="historyItem.changes.description">
+                          <strong>Description</strong>: <span ng-bind-html="historyItem.changes.description | to_trusted"></span>
+                        </li>
+                        <li ng-show="historyItem.changes.category">
+                          <strong>Category</strong>: <span ng-bind-html="historyItem.changes.category | to_trusted"></span>
+                        </li>
+                        <li ng-show="historyItem.changes.responsibleOrg">
+                          <strong>Org. Unit</strong>: <span ng-bind-html="historyItem.changes.responsibleOrg | to_trusted"></span>
+                        </li>
+                        <li ng-show="historyItem.changes.nominatedReviewer">
+                          <strong>Reviewer</strong>: 
+                          <span ng-bind-html="historyItem.changes.nominatedReviewer | to_trusted"></span>
+                        </li>
+                        <li ng-show="historyItem.changes.responsibleUser">
+                          <strong>Resp. Officer</strong>:
+                          <span ng-bind-html="historyItem.changes.responsibleUser | to_trusted"></span>
+                        </li>
+                        <li ng-show="historyItem.changes.identifiedAt">
+                          <strong>Related Review</strong>: <span ng-bind-html="historyItem.changes.identifiedAt | to_trusted"></span>
+                        </li>
+                        <li ng-show="historyItem.changes.externalFactors">
+                          <strong>External Factors</strong> updates:
+                          <table class="table table-striped table-bordered table-history-changes">
+                            <thead>
+                              <tr>
+                                <th>Description</th>
+                                <th width="25%">Trend</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="(key, factor) in historyItem.changes.externalFactors">
+                                <td>
+                                  <span ng-bind-html="factor.description | to_trusted"></span>
+                                </td>
+                                <td>
+                                  <span ng-bind-html="factor.trend | to_trusted"></span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </li>
+                        <li ng-show="historyItem.changes.assessment">
+                          <strong>Risk category and Internal Control</strong> updates:
+                          <table class="table table-bordered table-record-risks table-history-changes">
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th>Category</th>
+                                <th></th>
+                                <th class="text-center">Impact, $ Millions (AUD)</th>
+                                <th class="text-center">Consequence</th>
+                                <th class="text-center">Likelihood</th>
+                                <th class="rating-column text-center">Rating</th>
+                              </tr>
+                            </thead>
+                            <tbody ng-repeat="(key, riskChange) in historyItem.changes.assessment track by $index" ng-class-odd="'odd'" ng-class-even="'even'">
+                              <tr>
+                                <td rowspan="3">{{$index + 1}}</td>
+                                <td rowspan="3">
+                                  <span ng-bind-html="riskChange.category | to_trusted"></span>
+                                </td>
+                                <th>Initial assessment</th>
+                                <td class="text-center">
+                                  <span ng-bind-html="riskChange.initialAssessment.cost | to_trusted"></span> M
+                                </td>
+                                <td class="text-center">
+                                  <span ng-bind-html="riskChange.initialAssessment.consequence | to_trusted"></span>
+                                </td>
+                                <td class="text-center">
+                                  <span ng-bind-html="riskChange.initialAssessment.likelihood | to_trusted"></span>
+                                </td>
+                                <td class="text-center" rating-style="{{historyItem.changeList.assessment[key].initialAssessment.rating[1]|| historyItem.changeList.assessment[key].initialAssessment.rating[0] || historyItem.changeList.assessment[key].initialAssessment.rating}}">
+                                  <span ng-bind-html="riskChange.initialAssessment.rating | to_trusted"></span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th>Controls</th>
+                                <td colspan="4" class="record-controls-row">
+                                  <table class="table table-bordered table-record-controls">
+                                    <tr ng-repeat="(controlKey, ctrlChange) in riskChange.controls">
+                                      <td>
+                                        <span ng-bind-html="ctrlChange.title | to_trusted"></span>
+                                      </td>
+                                      <td width="30%">
+                                        <span ng-bind-html="ctrlChange.effectiveness | to_trusted"></span>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th>Controlled assessment</th>
+                                <td class="text-center">
+                                  <span ng-bind-html="riskChange.controlledAssessment.cost | to_trusted"></span>
+                                </td>
+                                <td class="text-center">
+                                  <span ng-bind-html="riskChange.controlledAssessment.consequence | to_trusted"></span>
+                                </td>
+                                <td class="text-center">
+                                  <span ng-bind-html="riskChange.controlledAssessment.likelihood | to_trusted"></span>
+                                </td>
+                                <td class="text-center" rating-style="{{historyItem.changeList.assessment[key].controlledAssessment.rating[1]|| historyItem.changeList.assessment[key].controlledAssessment.rating[0] || historyItem.changeList.assessment[key].controlledAssessment.rating}}">
+                                  <span ng-bind-html="riskChange.controlledAssessment.rating | to_trusted"></span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div ng-hide="entityChangesList"><p class="empty-list">No history changes</p></div>
+                </div>
+              </div>
+            </uib-tab>
+          </uib-tabset>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 ibox">
+      <item-attachments></item-attachments>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="cancel()">&times;</button>
+  <h4 class="modal-title">
+    <i class="fa fa-code-fork fa-fw"></i> Merge controls
+  </h4>
+</div>
+
+<div class="modal-body">
+  <div ng-include="'app/alert.html'"></div>
+  <div ng-show="isProcessing">
+    <div class="text-center">
+      <h2>Processing....</h2>
+      <div class="block-spinner"></div>
+    </div>
+  </div>
+  <div ng-hide="isProcessing">
+    <p>
+      The control <b>{{mergeControl.controlId}}</b> "{{mergeControl.title}}"<br/>
+    </p>
+    <p>
+      Will be <b>MERGED</b> into control <b>{{baseControl.controlId}}</b> "{{baseControl.title}}"
+    </p>
+    <p>
+      <b>{{baseControl.controlId}}</b> will be the master and all data will be retained. The related risks from <b>{{mergeControl.controlId}}</b> will be added to <b>{{baseControl.controlId}}</b> and then <b>{{mergeControl.controlId}}</b> will be retired.
+    </p>
+    <p>
+      Are you sure you want to proceed?
+    </p>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" ng-click="merge()" ng-hide="isCompleted" ng-disabled="isProcessing">Merge</button>
+  <button type="button" class="btn btn-white" ng-click="cancel()" ng-hide="isCompleted" ng-disabled="isProcessing">Cancel</button>
+  <button type="button" class="btn btn-primary" ng-click="cancel()" ng-show="isCompleted">Close</button>
+</div>

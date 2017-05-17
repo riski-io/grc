@@ -1,0 +1,69 @@
+{
+  "name": "grc",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "~1.5.0",
+    "json3": "~3.3.1",
+    "es5-shim": "~4.5.5",
+    "jquery": "2.2.1",
+    "bootstrap": "3.3.6",
+    "angular-resource": "~1.5.0",
+    "angular-cookies": "~1.5.0",
+    "angular-sanitize": "~1.5.0",
+    "angular-bootstrap": "~1.1.2",
+    "font-awesome": ">=4.1.0",
+    "lodash": "~4.5.1",
+    "angular-socket-io": "~0.7.0",
+    "angular-ui-router": "~0.2.10",
+    "angular-dialog-service": "~5.2.11",
+    "angular-chosen-localytics": "^1.3.0",
+    "angular-truncate": "*",
+    "angular-ui-tree": "~2.15.0",
+    "ejs": "~1.0.0",
+    "d3": "~3.5.5",
+    "ng-file-upload": "~12.0.1",
+    "handlebars": "~4.0.5",
+    "angular-notify": "~2.5.0",
+    "summernote": "^0.8.2",
+    "angularjs-placeholder": "~1.0.1",
+    "angular-cache-buster": "~0.4.3",
+    "async": "1.5.2",
+    "jquery-file-download": "~1.4.3",
+    "checklist-model": "^0.9.0",
+    "c3-angular": "^1.1.0",
+    "chosen": "^1.5.1",
+    "metisMenu": "^2.4.3",
+    "angular-nvd3": "^1.0.6",
+    "angular-datatables": "~0.5",
+    "datatables.net-buttons": "^1.2.4",
+    "datatables.net-buttons-bs": "^1.2.4",
+    "pdfmake": "^0.1.25",
+    "chartist": "^0.10.1",
+    "angular-auth0": "^1.0.6",
+    "angular-lock": "^2.0.2",
+    "angular-jwt": "^0.1.9"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.5.0",
+    "angular-scenario": "~1.5.0"
+  },
+  "overrides": {
+    "angular-dialog-service": {
+      "main": [
+        "dist/dialogs.min.css",
+        "dist/dialogs.min.js",
+        "dist/dialogs-default-translations.min.js"
+      ]
+    },
+    "ng-file-upload": {
+      "main": "ng-file-upload-all.min.js"
+    }
+  },
+  "resolutions": {
+    "angular": "~1.5.0",
+    "angular-bootstrap": "~1.1.2",
+    "d3": "~3.5.5",
+    "jquery": "2.2.1",
+    "auth0.js": "^8.4.0"
+  }
+}

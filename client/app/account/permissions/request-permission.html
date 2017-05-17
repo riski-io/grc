@@ -1,0 +1,30 @@
+<div class="permissions-request col-sm-12 col-md-10 col-lg-8">
+    <h1>Oops!</h1>
+
+    <div class="error-desc">
+        <p>It looks like you don't have permissions to see this item</p>
+        <p>Bt default you can see all items owned by you organisation unit or any lower level organisation unit.</p>
+        <p>You can also see all items that are linked to any review of which you are a member, even if that review is hosted outside your organisation unit.</p>
+        <p>Record <strong>G-221</strong> is owned by <strong>Lysaght</strong> and is linked to <strong>R-123</strong>. If you believe you should see the item then you can request membership.</p>
+    </div>
+    <div class="m-t permissions-request-form">
+        <div class="col-md-2">
+            <label for="entityField">Review:</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="entityField" value="R-123" />
+        </div>
+        <button type="submit" class="btn btn-primary m-l">Request Membership</button>
+    </div>
+    <div class="m-t permissions-request-form">
+        <div class="col-md-2">
+            <label for="orgUnit">Org Unit:</label>
+        </div>
+        <div class="col-md-4">
+            <select name="orgUnit" chosen id="orgUnit" class="form-control" ng-model="orgUnit"  ng-options="unit as unit.orgName for unit in orgUnits track by unit.orgUnitId">
+                <option value=""></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary m-l">Request Membership</button>
+    </div>
+</div>

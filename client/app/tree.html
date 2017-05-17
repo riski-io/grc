@@ -1,0 +1,9 @@
+<div ui-tree-handle class="tree-node tree-node-content"> 
+	<a class="btn btn-success btn-xs" ng-if="item.items && item.items.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-chevron-right': collapsed, 'fa-chevron-down': !collapsed}"></span></a> 
+
+	{{item.orgName}} 
+<a class="pull-right btn btn-info btn-xs" data-nodrag ng-click="updateSearchResults(this, false)"><span class="fa fa-filter"></span></a>
+</div>
+<ol ui-tree-nodes="options" ng-model="item.items" ng-class="{hidden: collapsed}" ng-if="!collapsed">
+  <li ng-repeat="item in item.items" ui-tree-node ng-include="'app/tree.html'" collapsed="true"></li>
+</ol>

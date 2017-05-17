@@ -1,0 +1,47 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2>Admin: Reference Data</h2>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content">
+<!--   <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h4>Admin: Reference Data</h4>
+    </div>
+    <div class="ibox-content clearfix">
+      <a href="javascript:void(0);" class="btn btn-sm btn-primary" ng-click="editConcept()"><i class="fa fa-pencil-square"></i> New concept</a>
+    </div>
+  </div> -->
+  <div class="ibox float-e-margins" ng-repeat="concept in concepts">
+    <div class="ibox-title">
+      <h5>{{concept.title}}</h5>
+      <a href="javascript:void(0);" class="btn btn-xs btn-primary pull-right" ng-click="editConceptItem(concept)"><i class="fa fa-plus"></i> New Code</a>
+      <a href="javascript:void(0);" class="btn btn-xs btn-primary pull-right" style="margin: 0 10px;" ng-click="editConcept(concept)"><i class="fa fa-pencil-square"></i> Edit concept</a>
+    </div>
+
+    <div class="ibox-content clearfix" ng-hide="isLoading" ng-if="concept.items.length">
+      <table class="table table-hover table-striped no-margins">
+        <thead>
+          <tr>
+            <th>Code Name</th>
+            <th>Code Value</th>
+            <th>Description</th>
+            <th style="width: 1%"></th>
+          </tr>
+        </thead>
+        <tbody class="row">
+          <tr ng-repeat="item in concept.items">
+            <td>{{item.title}}</td>
+            <td>{{item.code}}</td>
+            <td>{{item.description}}</td>
+            <td class="actions">
+              <a href="javascript:void(0);" ng-click="editConceptItem(concept, item)"><i class="fa fa-pencil-square"></i></a>
+              <a href="javascript:void(0);" ng-click="removeConceptItem(concept, item)"><i class="fa fa-remove"></i></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

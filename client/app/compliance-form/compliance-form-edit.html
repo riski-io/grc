@@ -1,0 +1,140 @@
+<div class="modal fade" id="heirarchy">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4> </div>
+      <div class="modal-body">
+        <div ui-tree="options" data-drag-enabled="false">
+          <ol ui-tree-nodes ng-model="orgTree">
+            <li ng-repeat="item in orgTree" ui-tree-node ng-include="'app/tree.html'"></li>
+          </ol>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-12">
+        <h2 ng-if="formData._id">Edit Compliance Form - # {{formData._id}}</h2>
+        <h2 ng-if="!formData._id">New Compliance Form</h2>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-show="isLoading">
+    <div class="text-center">
+        <h2>Loading....</h2>
+        <div class="block-spinner"></div>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-hide="isLoading">
+    <div class="ibox">
+        <div class="ibox-content">
+            <ng-form name="complianceForm" novalidate>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-12" ng-class="{ 'has-error': submitted && complianceForm.title.$error.required }">
+                            <label for="title">Title</label>
+                            <input type="text" name="title" id="title" class="form-control" placeholder="Title" ng-model="formData.title" required>
+                            <div ng-show="submitted">
+                                <div ng-show="complianceForm.title.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div  class="form-group">
+                      <div class="col-sm-12" ng-class="{ 'has-error': submitted && complianceForm.complianceFormTemplateId.$error.required }">
+                          <label for="complianceFormTemplateId" class="text-black f14">Compliance form template</label>
+                          <select ng-change="previewForm(complianceFormTemplate)" data-placeholder="Choose a form template" class="form-control" name="complianceFormTemplateId" id="responsibleUsers" chosen required ng-model="complianceFormTemplate" ng-options="complianceFormTemplate as complianceFormTemplate._source.title for complianceFormTemplate in complianceFormTemplates track by complianceFormTemplate._id">
+                            <option value=""></option>
+                          </select>
+                          <div ng-show="submitted">
+                            <div ng-show="complianceForm.complianceFormTemplateId.$error.required" class="text-danger">This field is required</div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-4" ng-class="{ 'has-error': submitted && complianceForm.questionnairOrgUnit.$error.required }">
+                            <label for="questionnairOrgUnit">Org Unit:</label>
+                            <div class="input-group">
+                                <input class="form-control" name="questionnairOrgUnit" readonly="" ng-model="formData.responsibleOrg.orgName" id="questionnairOrgUnit">
+                                 <span class="input-group-btn">
+                                  <a class="btn btn-info" data-toggle="modal" data-target="#heirarchy"><span class="fa fa-filter" ></span>
+                                  </a>
+                                </span>
+                            </div>
+                            <div ng-show="submitted">
+                                <div ng-show="complianceForm.questionnairOrgUnit.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4" ng-class="{ 'has-error': submitted && complianceForm.responsibleRole.$error.required }">
+                            <label for="responsibleRole">Responsible Role</label>
+                            <select chosen disable-search="true" name="responsibleRole" id="responsibleRole" class="form-control" ng-model="formData.responsibleRole" ng-options="role.code as role.code for role in enums.role">
+                                <option value="all">All</option>
+                            </select>
+                            <div ng-show="submitted">
+                                <div ng-show="complianceForm.responsibleRole.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <label class="checkbox-control m-t-lg"> <input type="checkbox" ng-model="formData.includeChildOrgs"/>
+                            <span> Include children</span>
+                          </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-8"ng-class="{ 'has-error': submitted && complianceForm.responsibleUsers.$error.required }" >
+                        <label for="responsibleUsers" class="text-black f14">Resp Users</label>
+                        <select class="form-control" name="responsibleUsers" chosen required ng-model="formData.responsibleUsers" ng-options="user as user.display_name for user in users track by user._id" multiple="true">
+                          <option value=""></option>
+                        </select>
+                        <div ng-show="submitted">
+                          <div ng-show="complianceForm.responsibleUsers.$error.required" class="text-danger">This field is required</div>
+                        </div>
+                      </div> 
+                      <div class="col-sm-4" ng-class="{ 'has-error': submitted && complianceForm.dueDate.$error.required }">
+                          <label for="dueDate">Due Date</label>
+                          <div class="input-group date">
+                              <input type="text" name="dueDate" class="form-control" placeholder="dd-MMM-yyyy" id="dueDate" ng-focus="dueDateOpened = true" ng-focus="dueDateOpened = false" uib-datepicker-popup="dd-MMM-yyyy" ng-model="formData.dueDate" is-open="dueDateOpened" show-button-bar="false"  required=""  />
+                              <span class="input-group-addon"  ng-click="dueDateOpened=true;$event.stopPropagation();"><i class="fa fa-calendar"></i></span>
+                          </div>
+                          <p ng-show="complianceForm.dueDate.$error.required && submitted" class="help-block">This field is required</p>
+                        </div>    
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12" ng-class="{ 'has-error': submitted && complianceForm.description.$error.required }">
+                            <label for="title">Description</label>
+                            <div summernote config="wysiwygConfig" required height="100" class="summernote" name="description" ng-model="formData.description"></div>
+                            <div ng-show="submitted">
+                                <div ng-show="complianceForm.description.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="text-right col-xs-12">
+                        <hr class="hr"> 
+                        <a class="btn btn-white text-muted m-r-sm" ui-sref="compliance-form.view({id: formData._id})" ng-if="formData._id">Cancel</a>
+                        <button class="btn btn-white text-muted m-r-sm" ng-click="formData = {};" ng-if="!formData._id">Reset</button>
+                        <button type="submit" ng-click="save(complianceForm.$valid)" class="btn btn-primary">Save</button>
+                      </div>
+                    </div>
+                </div>
+            </ng-form>
+        </div>
+      </div>
+      <div class="ibox" ng-if="formObject">
+        <div class="ibox-title">
+          <h2>Form Preview</h2>
+        </div>
+        <div class="ibox-content">
+          <form >
+            <div ng-model="formObject" fb-form="default"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,12 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="no()">&times;</button>
+  <h4 class="modal-title">
+    <span class="fa fa-check"></span> {{title}}
+  </h4>
+</div>
+<div class="modal-body" ng-bind-html="msg">
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn" ng-class="submitBtn.class" ng-click="yes()">{{submitBtn.value}}</button>
+  <button type="button" class="btn btn-white" ng-click="no()">Cancel</button>
+</div>

@@ -1,0 +1,249 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/">
+    <title>Governance, Risk management, and Compliance System</title>
+    <!-- <title page-title></title> -->
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(client) app/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/angular-dialog-service/dist/dialogs.min.css" />
+    <link rel="stylesheet" href="bower_components/chosen/chosen.css" />
+    <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.css" />
+    <link rel="stylesheet" href="bower_components/angular-notify/dist/angular-notify.css" />
+    <link rel="stylesheet" href="bower_components/summernote/dist/summernote.css" />
+    <link rel="stylesheet" href="bower_components/c3/c3.css" />
+    <link rel="stylesheet" href="bower_components/metisMenu/dist/metisMenu.css" />
+    <link rel="stylesheet" href="bower_components/nvd3/build/nv.d3.css" />
+    <link rel="stylesheet" href="bower_components/angular-datatables/dist/css/angular-datatables.css" />
+    <link rel="stylesheet" href="bower_components/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css" />
+    <link rel="stylesheet" href="bower_components/chartist/dist/chartist.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <link rel="stylesheet" href="assets/theme/animate.css">
+    <link rel="stylesheet" href="assets/theme/plugins/datepicker/angular-datepicker.css">
+    <link rel="stylesheet" href="assets/theme/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="assets/theme/plugins/iCheck/custom.css">
+    <link rel="stylesheet" href="assets/theme/plugins/summernote/summernote-bs3.css">
+    <link rel="stylesheet" href="assets/theme/plugins/dataTables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="assets/plugins/angular-form-builder/angular-form-builder.css">
+
+    <!-- build:css({.tmp,client}) app/app.css -->
+    <link rel="stylesheet" href="app/app.css">
+    <!-- injector:css -->
+    <link rel="stylesheet" href="app/compliance-form-template/compliance-form-template.css">
+    <link rel="stylesheet" href="app/compliance-form/compliance-form.css">
+    <link rel="stylesheet" href="components/modal/modal.css">
+    <!-- endinjector -->
+    <!-- endbuild -->
+
+    <link rel="stylesheet" href="assets/theme/style.css">
+
+  </head>
+  <body ng-app="grcApp" class="{{$state.current.data.specialClass}}">
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Main view  -->
+    <div ui-view></div>
+
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+
+    <!--[if IE]>
+        <script type="text/javascript" src="assets/plugins/svg-to-image/base64.js"></script>
+    <![endif]-->
+
+    <!-- build:js({client,node_modules}) app/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/lodash/lodash.js"></script>
+    <script src="bower_components/angular-socket-io/socket.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/angular-translate/angular-translate.js"></script>
+    <script src="bower_components/angular-dialog-service/dist/dialogs.min.js"></script>
+    <script src="bower_components/angular-dialog-service/dist/dialogs-default-translations.min.js"></script>
+    <script src="bower_components/chosen/chosen.jquery.js"></script>
+    <script src="bower_components/angular-chosen-localytics/dist/angular-chosen.js"></script>
+    <script src="bower_components/angular-truncate/src/truncate.js"></script>
+    <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
+    <script src="bower_components/ejs/ejs.js"></script>
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/ng-file-upload/ng-file-upload-all.min.js"></script>
+    <script src="bower_components/handlebars/handlebars.js"></script>
+    <script src="bower_components/angular-notify/dist/angular-notify.js"></script>
+    <script src="bower_components/summernote/dist/summernote.js"></script>
+    <script src="bower_components/angularjs-placeholder/src/angularjs-placeholder.js"></script>
+    <script src="bower_components/angular-cache-buster/angular-cache-buster.js"></script>
+    <script src="bower_components/async/lib/async.js"></script>
+    <script src="bower_components/jquery-file-download/src/Scripts/jquery.fileDownload.js"></script>
+    <script src="bower_components/checklist-model/checklist-model.js"></script>
+    <script src="bower_components/c3/c3.js"></script>
+    <script src="bower_components/c3-angular/c3-angular.min.js"></script>
+    <script src="bower_components/metisMenu/dist/metisMenu.js"></script>
+    <script src="bower_components/nvd3/build/nv.d3.js"></script>
+    <script src="bower_components/angular-nvd3/dist/angular-nvd3.js"></script>
+    <script src="bower_components/datatables.net/js/jquery.dataTables.js"></script>
+    <script src="bower_components/angular-datatables/dist/angular-datatables.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/bootstrap/angular-datatables.bootstrap.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/colreorder/angular-datatables.colreorder.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/columnfilter/angular-datatables.columnfilter.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/light-columnfilter/angular-datatables.light-columnfilter.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/colvis/angular-datatables.colvis.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/fixedcolumns/angular-datatables.fixedcolumns.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/fixedheader/angular-datatables.fixedheader.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/scroller/angular-datatables.scroller.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/buttons/angular-datatables.buttons.js"></script>
+    <script src="bower_components/angular-datatables/dist/plugins/select/angular-datatables.select.js"></script>
+    <script src="bower_components/datatables.net-buttons/js/dataTables.buttons.js"></script>
+    <script src="bower_components/datatables.net-buttons/js/buttons.colVis.js"></script>
+    <script src="bower_components/datatables.net-buttons/js/buttons.flash.js"></script>
+    <script src="bower_components/datatables.net-buttons/js/buttons.html5.js"></script>
+    <script src="bower_components/datatables.net-buttons/js/buttons.print.js"></script>
+    <script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.js"></script>
+    <script src="bower_components/datatables.net-buttons-bs/js/buttons.bootstrap.js"></script>
+    <script src="bower_components/pdfmake/build/pdfmake.js"></script>
+    <script src="bower_components/pdfmake/build/vfs_fonts.js"></script>
+    <script src="bower_components/chartist/dist/chartist.js"></script>
+    <script src="bower_components/auth0.js/build/auth0.js"></script>
+    <script src="bower_components/angular-auth0/angular-auth0.js"></script>
+    <script src="bower_components/auth0-lock/build/lock.js"></script>
+    <script src="bower_components/angular-lock/angular-lock.js"></script>
+    <script src="bower_components/angular-jwt/dist/angular-jwt.js"></script>
+    <!-- endbower -->
+    
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="assets/plugins/summernote/angular-summernote.min.js"></script>
+    <script src="assets/plugins/svg-to-image/svg_todataurl.js"></script>
+    <script src="assets/plugins/svg-to-image/canvg.js"></script>
+
+    <script src="assets/plugins/angular-form-builder/angular-form-builder.js"></script>
+    <script src="assets/plugins/angular-form-builder/angular-form-builder-components.js"></script>
+    <script src="assets/plugins/angular-form-builder/angular-validator.js"></script>
+    <script src="assets/plugins/angular-form-builder/angular-validator-rules.js"></script>
+
+    <!-- endbuild -->
+
+
+    <!-- build:js({.tmp,client}) app/app.js -->
+    <script src="app/app.js"></script>
+
+    <!-- injector:js -->
+    <script src="app/account/account.js"></script>
+    <script src="app/account/login/login.controller.js"></script>
+    <script src="app/account/permissions/permissions.controller.js"></script>
+    <script src="app/account/permissions/permissions.js"></script>
+    <script src="app/account/settings/settings.controller.js"></script>
+    <script src="app/account/signup/signup.controller.js"></script>
+    <script src="app/action-item/action-item.controller.js"></script>
+    <script src="app/action-item/action-item.js"></script>
+    <script src="app/admin/admin.controller.js"></script>
+    <script src="app/admin/admin.js"></script>
+    <script src="app/admin/email.template/template.controller.js"></script>
+    <script src="app/admin/email.template/template.js"></script>
+    <script src="app/admin/kpi/kpi.controller.js"></script>
+    <script src="app/admin/kpi/kpi.js"></script>
+    <script src="app/admin/org.hierarchy/hierarchy.controller.js"></script>
+    <script src="app/admin/org.hierarchy/hierarchy.js"></script>
+    <script src="app/admin/permissions/permissions.controller.js"></script>
+    <script src="app/admin/permissions/permissions.js"></script>
+    <script src="app/admin/reference/reference.controller.js"></script>
+    <script src="app/admin/reference/reference.js"></script>
+    <script src="app/admin/settings/settings.controller.js"></script>
+    <script src="app/admin/settings/settings.js"></script>
+    <script src="app/admin/severity.matrix/matrix.controller.js"></script>
+    <script src="app/admin/severity.matrix/matrix.js"></script>
+    <script src="app/app.config.js"></script>
+    <script src="app/app.constant.js"></script>
+    <script src="app/app.run.js"></script>
+    <script src="app/attachments/attachments.controller.js"></script>
+    <script src="app/comments/comments.controller.js"></script>
+    <script src="app/compliance-form-template/compliance-form-template.controller.js"></script>
+    <script src="app/compliance-form-template/compliance-form-template.js"></script>
+    <script src="app/compliance-form/compliance-form.controller.js"></script>
+    <script src="app/compliance-form/compliance-form.js"></script>
+    <script src="app/confirm/confirm.js"></script>
+    <script src="app/controls/controls.controller.js"></script>
+    <script src="app/controls/controls.js"></script>
+    <script src="app/governance-record/governance-record.controller.js"></script>
+    <script src="app/governance-record/governance-record.js"></script>
+    <script src="app/help/help.controller.js"></script>
+    <script src="app/help/help.js"></script>
+    <script src="app/history/history.controller.js"></script>
+    <script src="app/invitation/invitation.controller.js"></script>
+    <script src="app/main/main.controller.js"></script>
+    <script src="app/main/main.js"></script>
+    <script src="app/member/member.controller.js"></script>
+    <script src="app/member/member.js"></script>
+    <script src="app/reports/dashboard.controller.js"></script>
+    <script src="app/reports/reports.controller.js"></script>
+    <script src="app/reports/reports.directives.js"></script>
+    <script src="app/reports/reports.js"></script>
+    <script src="app/review/review.controller.js"></script>
+    <script src="app/review/review.js"></script>
+    <script src="app/search/app.run.js"></script>
+    <script src="app/search/search.controller.js"></script>
+    <script src="app/search/search.js"></script>
+    <script src="assets/plugins/angular-form-builder/angular-form-builder-components.js"></script>
+    <script src="assets/plugins/angular-form-builder/angular-form-builder.js"></script>
+    <script src="assets/plugins/angular-form-builder/angular-validator-rules.js"></script>
+    <script src="assets/plugins/angular-form-builder/angular-validator.js"></script>
+    <script src="assets/plugins/load.js"></script>
+    <script src="assets/plugins/summernote/angular-summernote.min.js"></script>
+    <script src="assets/plugins/svg-to-image/base64.js"></script>
+    <script src="assets/plugins/svg-to-image/canvg.js"></script>
+    <script src="assets/plugins/svg-to-image/svg_todataurl.js"></script>
+    <script src="components/action-item/action-item.service.js"></script>
+    <script src="components/attachments/attachments.service.js"></script>
+    <script src="components/auth/auth.services.js"></script>
+    <script src="components/auth/router.decorator.js"></script>
+    <script src="components/auth/user.service.js"></script>
+    <script src="components/comments/comments.service.js"></script>
+    <script src="components/common/controllers/sidebar.controller.js"></script>
+    <script src="components/common/directives/directives.js"></script>
+    <script src="components/common/filters/filters.js"></script>
+    <script src="components/common/services/constatns.js"></script>
+    <script src="components/common/services/services.js"></script>
+    <script src="components/compliance-form/compliance-form.js"></script>
+    <script src="components/control/control.service.js"></script>
+    <script src="components/enum/enum.service.js"></script>
+    <script src="components/filters/newline.filter.js"></script>
+    <script src="components/filters/range.filter.js"></script>
+    <script src="components/governance-record/governance-record.service.js"></script>
+    <script src="components/help/help.service.js"></script>
+    <script src="components/hierarchy/hierarchy.service.js"></script>
+    <script src="components/history/history.service.js"></script>
+    <script src="components/mappings/mappings.services.js"></script>
+    <script src="components/matrix/matrix.service.js"></script>
+    <script src="components/member/member.service.js"></script>
+    <script src="components/modal/modal.service.js"></script>
+    <script src="components/mongoose-error/mongoose-error.directive.js"></script>
+    <script src="components/navbar/navbar.controller.js"></script>
+    <script src="components/permissions/permissions.service.js"></script>
+    <script src="components/review/review.service.js"></script>
+    <script src="components/search/search.service.js"></script>
+    <script src="components/settings/settings.service.js"></script>
+    <script src="components/socket/socket.service.js"></script>
+    <script src="components/template/template.service.js"></script>
+    <script src="components/utils/Blob.js"></script>
+    <script src="components/utils/FileSaver.js"></script>
+    <!-- endinjector -->
+    <!-- endbuild -->
+  </body>
+</html>

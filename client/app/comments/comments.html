@@ -1,0 +1,43 @@
+<div class="comments-block">
+
+    <div class="wrapper wrapper-content" ng-show="commentsIsLoading">
+        <div class="text-center">
+            <h2>Loading....</h2>
+            <div class="block-spinner"></div>
+        </div>
+    </div>
+
+    <div class="feed-activity-list ng-scope" ng-hide="commentsIsLoading">
+        <div class="feed-element" ng-repeat="comment in commentsList | orderBy:'+createdAt'">
+            <div class="comment-item">
+                <a href ng-if="editable === true && allowed === true" class="pull-right" ng-click="removeComment(comment.commentId, $index)"><i class="fa fa-remove"></i></a>
+                <a href ui-sref="member.view({userId: comment.postedBy._id})"><strong>{{comment.postedBy.display_name}}</strong></a> posted at {{comment.createdAt | date:'hh:ss a on dd-MMM-yyyy'}}
+                <div class="comment-body">
+                    {{comment.text}}
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="isAvaliable" ng-hide="commentsList.length">
+            <p class="empty-list text-muted">No comments yet</p>
+        </div>
+    </div>
+
+    <div ng-if="!isAvaliable">
+        <p class="empty-list">Comment features will be available after you save this {{entityType || 'item'}}</p>
+    </div>
+    <div class="comment-form m-t noprint" ng-hide="commentsIsLoading || !isAvaliable">
+        <form role="form" name="commentForm" ng-submit="addComment(commentForm)" novalidate ng-show="allowed">
+            <h3>Add comment</h3>
+            <div class="form-group clear no-margins" ng-class="{ 'has-error': submitted && commentForm.commentBody.$error.required }">
+                <textarea name="commentBody" class="form-control" ng-model="commentBody"></textarea>
+                <div ng-show="submitted">
+                    <div ng-show="commentForm.commentBody.$error.required" class="text-danger">This field is required</div>
+                </div>
+            </div>
+            <div class="form-group clear no-margins">
+                <button type="submit" class="btn btn-primary pull-right m-t-sm" ng-disabled="!commentBody">Add comment</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,122 @@
+
+<blockquote>
+  <h3 class="text-info">Control {{item.controlId}}</h3> 
+</blockquote>
+<div class="ibox">
+  <div class="ibox-content">
+    <div class="row m-b-md">
+      <div class="col-xs-12">
+        <h4>{{item.title}}</h4> </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <dl class="dl-horizontal"> 
+          <dt>Status</dt>
+          <dd>{{item.status}}</dd> 
+          <dt>Category</dt>
+          <dd>{{item.category}}</dd> 
+          <dt>Org. Unit</dt>
+          <dd>{{item.responsibleOrg.orgName}}</dd> 
+          <dt>Resp. User</dt>
+          <dd>{{item.responsibleUser.display_name}}</dd> 
+        </dl>
+      </div>
+      <div class="col-xs-6">
+        <dl class="dl-horizontal">
+          <dt>Effective From:</dt>
+          <dd>{{formatDate item.effectiveFrom 'short'}}</dd>
+          <dt>Effective To:</dt>
+          <dd>{{formatDate  item.effectiveTo 'short'}}</dd>
+          <dt>Version:</dt>
+          <dd>{{item.version}}</dd> 
+        </dl>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <dl class="dl-horizontal">
+          <dt>Description: </dt>
+          <dd>{{{item.description}}}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ibox">
+  <div class="ibox-title">
+    <h4 class="text-info">Associated Records</h4> </div>
+  <div class="ibox-content">
+  	{{#if item.records}} 
+     <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+	        <th>ID</th>
+	        <th>Title</th>
+	        <th>Category</th>
+	        <th>Status</th>
+	        <th class="text-center">Consequence</th>
+	        <th class="text-center">Likelihood</th>
+	        <th class="text-center">Rating</th>
+	        <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+      	{{#each item.records}}
+	        <tr class="linked-row">
+	          <td class="text-nowrap"><a href="{{site_url}}/governance-record/{{recordId}}" target="_blank">{{recordId}}</a></td>
+	          <td>{{title}}</td>
+	          <td>{{category}}</td>
+	          <td>{{status}}</td>
+	          <td class="text-center">{{overallAssessment.controlledConsequence}}</td> 
+              <td class="text-center">{{overallAssessment.controlledLikelihood}}</td> 
+              <td class="text-center">{{overallAssessment.controlledRating}}</td>
+              <td>{{formatDate updatedAt 'short'}}</td>
+	        </tr>
+      	{{/each}}
+      </tbody>
+    </table>
+    {{^}}
+    <p class="empty-list">No records for review<p>
+    {{/if}}
+  </div>
+</div>
+
+<!-- <div class="ibox">
+  <div class="ibox-title">
+    <h4 class="text-info">Associated Action Items</h4> </div>
+  <div class="ibox-content"> 
+  	{{#if item.actionItems}}
+     <table class="table table-striped table-bordered table-hover table-custom">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Priority</th>
+        <th>Due Date</th>
+        <th>Created By</th>
+        <th>Assigned To</th>
+      </tr>
+    </thead>
+    <tbody>
+    	{{#each item.actionItems}}
+    	   <tr class="linked-row">
+	        <td class="text-nowrap">{{actionItemId}}</td>
+	        <td>{{title}}</td>
+	        <td>{{status}}</td>
+	        <td>{{priority}}</td>
+	        <td>{{formatDate dueDate 'short'}}</td>
+	        <td>{{item.createdBy.givenName}} {{item.createdBy.familyName}}</td>
+	        <td>{{item.assignedTo.givenName }} {{item.assignedTo.familyName }}</td>
+	      </tr>
+      	{{/each}}
+    </tbody>
+  </table>
+  {{^}}
+  	<p class="empty-list">No Associated Action Items<p>
+  {{/if}}
+  </div>
+</div> -->
+<!-- </div>
+</div> -->

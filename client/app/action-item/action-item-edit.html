@@ -1,0 +1,194 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-md-12">
+        <h2 ng-if="actionItem._id">Edit Action Item - # {{actionItem._id}}</h2>
+        <h2 ng-if="!actionItem._id">New Action Item</h2>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox">
+        <div class="ibox-content">
+            <ng-form name="actionItemForm" ng-submit="saveActionItem(actionItemForm)" novalidate>
+                <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-9" ng-class="{ 'has-error': actionItemSubmitted && actionItemForm.actionItemTitle.$error.required }">
+                        <label for="actionItemTitle">Title</label>
+                        <input type="text" name="actionItemTitle" id="actionItemTitle" class="form-control" placeholder="Title" ng-model="actionItem.title" required="">
+                        <div ng-show="actionItemSubmitted">
+                            <div ng-show="actionItemForm.actionItemTitle.$error.required" class="text-danger">This field is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" ng-class="{ 'has-error': actionItemSubmitted && actionItemForm.actionItemStatus.$error.required }">
+                        <label for="actionItemStatus">Status</label>
+                        <select name="actionItemStatus" ng-init="actionItem.status = actionItem.status || actionItemStatuses[0]" id="actionItemStatus" class="form-control" chosen disable-search="true" ng-model="actionItem.status" ng-options="status as status for status in actionItemStatuses" required="">
+                            <option value=""></option>
+                        </select>
+                        <div ng-show="actionItemSubmitted">
+                            <div ng-show="actionItemForm.actionItemStatus.$error.required" class="text-danger">This field is required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3" ng-class="{ 'has-error': actionItemSubmitted && actionItemForm.actionItemassignedTo.$error.required }">
+                        <label for="actionItemassignedTo">Assigned To</label>
+                        <select class="form-control" chosen name="actionItemassignedTo" id="actionItemassignedTo" ng-model="actionItem.assignedTo" ng-options="user as user.display_name for user in users track by user._id" required="">
+                            <option value=""></option>
+                        </select>
+                        <div ng-show="actionItemSubmitted">
+                            <div ng-show="actionItemForm.actionItemassignedTo.$error.required" class="text-danger">This field is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" ng-class="{ 'has-error': actionItemSubmitted && actionItemForm.actionItemPriority.$error.required }">
+                        <label for="actionItemPriority">Priority</label>
+                        <select name="actionItemPriority" id="actionItemPriority" class="form-control" chosen disable-search="true" ng-model="actionItem.priority"  ng-options="priority as priority for priority in actionItemPriorities" required="">
+                            <option value=""></option>
+                        </select>
+                        <div ng-show="actionItemSubmitted">
+                            <div ng-show="actionItemForm.actionItemPriority.$error.required" class="text-danger">This field is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" ng-class="{ 'has-error': actionItemSubmitted && actionItemForm.actionItemDueDate.$error.required }">
+                        <label for="actionItemDueDate">Due Date</label>
+                        <div class="input-group date">
+                            <input type="text" name="actionItemDueDate" class="form-control" placeholder="dd-MMM-yyyy" id="actionItemDueDate" ng-focus="dueDateOpened = true" ng-focus="dueDateOpened = false" uib-datepicker-popup="dd-MMM-yyyy" ng-model="actionItem.dueDate" is-open="dueDateOpened" show-button-bar="false"  required=""  />
+                            <span class="input-group-addon"  ng-click="dueDateOpened=true;$event.stopPropagation();"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <div ng-show="actionItemSubmitted">
+                            <div ng-show="actionItemForm.actionItemDueDate.$error.required" class="text-danger">This field is required</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" ng-class="{ 'has-error': actionItemSubmitted && actionItemForm.actionItemPercentComplete.$error.required }">
+                        <label for="actionItemPercentComplete">Overall % Complete</label>
+                        <div class="input-group">
+                            <input type="number" name="actionItemPercentComplete" ng-init="actionItem.percentComplete = actionItem.percentComplete || 0" id="actionItemPercentComplete" class="form-control" min="0" max="100" ng-model="actionItem.percentComplete" required=""> <span class="input-group-addon">%</span>
+                        </div>
+                        <div ng-show="actionItemSubmitted">
+                            <div ng-show="actionItemForm.actionItemPercentComplete.$error.required" class="text-danger">This field is required</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" ng-controller="ActionItemRelatedEntityCtrl as relatedEntity">
+                    <ng-form name="relatedEntityForm" novalidate>
+                        <div class="col-md-3" ng-class="{ 'has-error': (actionItemSubmitted || relatedEntitySubmitted) && relatedEntityForm.actionItemRefEntityType.$error.required }">
+                            <label for="actionItemRefEntityType">Related Entity Type</label>
+                            <select chosen disable-search="true" class="form-control" name="actionItemRefEntityType" id="actionItemRefEntityType" ng-model="actionItem.refEntityType" required>
+                                <option value=""></option>
+                                <option value="record">Governance Record</option>
+                                <option value="review">Review</option>
+                                <option value="control">Control</option>
+                            </select>
+                            <div ng-show="actionItemSubmitted || relatedEntitySubmitted">
+                                <div ng-show="relatedEntityForm.actionItemRefEntityType.$error.required" class="text-danger">This field is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" ng-class="{ 'has-error': (actionItemSubmitted || relatedEntitySubmitted) && relatedEntityForm.actionItemRefEntityId.$error.required }">
+                            <label for="actionItemRefEntityId">Related Entity ID</label>
+                            <div class="input-loading">
+                                <input type="text" name="actionItemRefEntityId" id="actionItemRefEntityId" class="form-control" placeholder='Enter entity ID (eg "R-1")' ng-model="actionItem.refEntityId" ng-disabled="loadingEntityTitle" required>
+                                <span ng-show="loadingEntityTitle" class="input-loader"><i class="fa fa-spinner fa-pulse"></i></span>
+                                <div ng-show="actionItemSubmitted || relatedEntitySubmitted">
+                                    <div ng-show="relatedEntityForm.actionItemRefEntityId.$error.required" class="text-danger">This field is required</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="padding-top: 24px;">
+                            <button type="button" class="btn btn-primary" ng-disabled="loadingEntityTitle" ng-click="showEntityTitle(relatedEntityForm)">Show entity title</button>
+                        </div>
+                    </ng-form>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12" ng-class="{ 'has-error': actionItemSubmitted && actionItemForm.actionItemdescription.$error.required }">
+                        <label for="actionItemdescription">Context</label>
+                        <div summernote config="wysiwygConfig" height="100" name="actionItemdescription" id="actionItemdescription" class="summernote" ng-model="actionItem.description" required=""></div>
+                        <div ng-show="actionItemSubmitted">
+                            <div ng-show="actionItemForm.actionItemdescription.$error.required" class="text-danger">This field is required</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12" ng-class="{ 'has-error': actionItemSubmitted && actionItemForm.actionItemActionRequired.$error.required }">
+                        <label for="actionItemActionRequired">Action Required</label>
+                        <div summernote config="wysiwygConfig" height="100" name="actionItemActionRequired" id="actionItemActionRequired" class="summernote" ng-model="actionItem.actionRequired" required=""></div>
+                        <div ng-show="actionItemSubmitted">
+                            <div ng-show="actionItemForm.actionItemActionRequired.$error.required" class="text-danger">This field is required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </ng-form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div class="panel blank-panel ui-tab">
+                                <uib-tabset>
+                                    <uib-tab heading="Members Comments">
+                                        <item-comments editable="true" allowed="rolePermissions.action_item.comment"></item-comments>
+                                    </uib-tab>
+                                  <uib-tab heading="Change History">
+                                    <div ng-controller="HistoryController as history">
+                                      <div class="history-changes">
+
+                                        <div class="history-change" ng-repeat="historyItem in entityChangesList">
+                                          <div id="note-{{$index + 1}}">
+                                            <p>#{{$index + 1}} - by <a href ui-sref="member.view({userId: change.changedBy._id})" target="_blank">{{historyItem.changedBy.display_name}}</a> on {{historyItem.changeDate| date:'dd-MMM-yyyy'}}</p>
+                                            <ul>
+                                              <li ng-show="historyItem.changes.title">
+                                                <strong>Title</strong>: <span ng-bind-html="historyItem.changes.title | to_trusted"></span>
+                                              </li>
+                                              <li ng-show="historyItem.changes.assignedTo">
+                                                <strong>Assignee</strong>:<span ng-bind-html="historyItem.changes.assignedTo.display_name | to_trusted"></span>
+                                              </li>
+                                              <li ng-show="historyItem.changes.description">
+                                                <strong>Context</strong>: <span ng-bind-html="historyItem.changes.description | to_trusted"></span>
+                                              </li>
+                                              <li ng-show="historyItem.changes.actionRequired">
+                                                <strong>Action Required</strong>: <span ng-bind-html="historyItem.changes.actionRequired | to_trusted"></span>
+                                              </li>
+                                              <li ng-show="historyItem.changes.percentComplete">
+                                                <strong>Overall % Complete</strong>: <span ng-bind-html="historyItem.changes.percentComplete | to_trusted"></span>%
+                                              </li>
+                                              <li ng-show="historyItem.changes.dueDate">
+                                                <strong>Due Date</strong>: <span ng-bind-html="historyItem.changes.dueDate | to_trusted"></span>
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </div>
+
+                                        <div ng-hide="entityChangesList"><p class="empty-list">No history changes</p></div>
+                                      </div>
+                                    </div>
+                                  </uib-tab>
+                                </uib-tabset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <!--@TODO: Add watchers to action item detail-->
+            <div class="ibox">
+                <item-attachments editable="true"></item-attachments>
+            </div>
+        </div>
+
+        <div class="ibox">
+            <div class="ibox-content">
+                <div class="form-group clearfix">
+                    <div class="text-right">
+                        <a class="btn btn-white" ui-sref="action-item.view({actionItemId: actionItem.actionItemId})" href>Cancel</a>
+                        <button type="submit" class="btn btn-primary" ng-click="saveActionItem(actionItemForm)">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

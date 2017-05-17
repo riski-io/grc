@@ -1,0 +1,332 @@
+<div class="modal fade" id="heirarchy">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4> </div>
+      <div class="modal-body">
+        <div ui-tree="options" data-drag-enabled="false">
+          <ol ui-tree-nodes ng-model="orgTree">
+            <li ng-repeat="item in orgTree" ui-tree-node ng-include="'app/tree.html'" collapsed="true"></li>
+          </ol>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2 ng-if="$state.is('governance-record.edit')" class="pull-left">Edit Governance record {{record._id}}</h2>
+    <h2 ng-if="$state.is('governance-record.new')" class="pull-left">New Governance Record</h2>
+    <div class="form-inline pull-right m-t-sm">
+      <div class="form-group">
+        <label>Status &nbsp;&nbsp;</label>
+        <select chosen disable-search="true" name="filterStatus" id="filterStatus" class="form-control" ng-model="record.status" required ng-options="recordStatus.code as recordStatus.title for recordStatus in enums.record_status">
+          <option value=""></option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content record-edit" ng-if="!isLoading">
+  <div class="form-horizontal">
+    <ng-form name="recordForm" ng-submit="saveRecord(recordForm)" novalidate>
+      <div class="row">
+        <!-- content -->
+        <div class="ibox">
+          <div class="ibox-title">
+            <h3 class="text-black f18 m0 pull-left">Basic Information</h3>
+            <div class="ibox-tools">
+              <ibox-collapse></ibox-collapse>
+            </div>
+          </div>
+          <div class="ibox-content">
+            <div class="form-group">
+              <div class="col-sm-4" ng-class="{ 'has-error': recordSubmitted && recordForm.recordTitle.$error.required }">
+                <label for="recordTitle" class="text-black f14">Record Title</label>
+                <input type="text" id="recordTitle" name="recordTitle" class="form-control" placeholder="Governance Record Title" ng-model="record.title" required>
+                <div ng-show="recordSubmitted">
+                  <div ng-show="recordForm.recordTitle.$error.required" class="text-danger">This field is required</div>
+                </div>
+              </div>
+              <div class="col-sm-4" ng-class="{ 'has-error': recordSubmitted && recordForm.recordCategory.$error.required }">
+                <label for="recordCategory" class="text-black f14">Category
+                  <a href tooltip="Click to see Legend" ng-click="showLegend('risk_category')"><i class="fa fa-lg fa-info-circle"></i></a></label>
+                <select chosen disable-search="true" name="recordCategory" id="recordCategory" class="form-control" ng-model="record.category" required ng-options="riskCategory.code as riskCategory.code for riskCategory in enums.risk_category">
+                  <option value=""></option>
+                </select>
+                <div ng-show="recordSubmitted">
+                  <div ng-show="recordForm.recordCategory.$error.required" class="text-danger">This field is required</div>
+                </div>
+              </div>
+              <div class="col-sm-4" ng-class="{ 'has-error': recordSubmitted && recordForm.relatedReview.$error.required }">
+                <label for="recordReview" class="text-black f14">Related Review</label>
+                <select id="recordReview" class="form-control" name="relatedReview" ng-model="record.identifiedAt" chosen search_contains="true" ng-options="review as (review._id + ' - ' + review.title) for review in reviews track by review._id" ng-change="record.reviewType = record.identifiedAt.reviewType">
+                  <option value=""></option>
+                </select>
+                <div ng-show="recordSubmitted">
+                  <div ng-show="recordForm.relatedReview.$error.required" class="text-danger">This field is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-4" ng-class="{ 'has-error': recordSubmitted && recordForm.orgUnit.$error.required }">
+                <label for="orgUnit" class="text-black f14">Org Unit</label>
+                <div class="input-group">
+                  <input class="form-control" name="orgUnit" readonly="" ng-model="record.responsibleOrg.orgName" required>
+                   <span class="input-group-btn">
+                    <a class="btn btn-info" data-toggle="modal" data-target="#heirarchy"><span class="fa fa-filter" ></span>
+                    </a>
+                  </span>
+                </div>
+                <div ng-show="recordSubmitted">
+                  <div ng-show="recordForm.orgUnit.$error.required" class="text-danger">This field is required</div>
+                </div>
+              </div>
+              <div class="col-sm-4" ng-class="{ 'has-error': recordSubmitted && recordForm.responsibleUser.$error.required }">
+                <label for="responsibleUser" class="text-black f14">Resp Officer</label>
+                <select class="form-control" name="responsibleUser" id="responsibleUser" chosen required ng-model="record.responsibleUser" ng-options="user as user.display_name for user in users track by user._id" ng-init="record.responsibleUser = record.responsibleUser || currentUser">
+                  <option value=""></option>
+                </select>
+                <div ng-show="recordSubmitted">
+                  <div ng-show="recordForm.responsibleUser.$error.required" class="text-danger">This field is required</div>
+                </div>
+              </div>
+              <div class="col-sm-4" ng-class="{ 'has-error': recordSubmitted && recordForm.recordReviewer.$error.required }">
+                <label for="recordReviewer" class="text-black f14">Reviewer</label>
+                <select class="form-control" name="recordReviewer" id="recordReviewer" chosen ng-model="record.nominatedReviewer" ng-options="user as user.display_name for user in users track by user._id" required>
+                  <option value=""></option>
+                </select>
+                <div ng-show="recordSubmitted">
+                  <div ng-show="recordForm.recordReviewer.$error.required" class="text-danger">This field is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-12">
+                <label class="text-black f14">Description <span tooltip-placement="right" tooltip="A brief statement that includes sources, events, causes, and impacts of the risk or opportunity." class="tooltip-icon"><i class="fa fa-lg fa-info-circle"></i></span></label>
+                <label>Describe description / causes</label>
+                <div summernote config="wysiwygConfig" height="100" class="summernote" ng-model="record.description"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ibox">
+          <div class="ibox-title">
+            <h3 class="text-black f18 m0 pull-left">External Factors</h3>
+            <div class="ibox-tools">
+              <button class="btn btn-success btn-xs" ng-click="addFactor()">Add New Factor</button>
+              <ibox-collapse></ibox-collapse>
+            </div>
+          </div>
+          <div class="ibox-content">
+            <p class="empty-list text-center text-muted" ng-if="!record.externalFactors.length">No External Factors</p>
+            <div ng-repeat="factor in record.externalFactors track by $index">
+              <ng-form name="recordExtenralFactorForm" novalidate>
+                <div class="panel ui-corner-all panel-default">
+                    <div class="panel-heading ui-corner-all">
+                        <label class="text-black">Factor {{$index+1}}</label>
+                        <a href ng-if="!factor.editable" ng-click="editFactor(factor, $index)" class=" btn btn-transperant btn-bitbucket pull-right text-success"><i class="fa fa-pencil"></i><span> Edit</span></a>
+                        <a href ng-if="!factor.editable" ng-click="removeFactor($index)" class=" btn btn-transperant btn-bitbucket pull-right text-danger"><i class="fa fa-trash"> <span> Delete</span></i></a>
+                        <a href ng-if="factor.editable" ng-click="done(factor, $index)" class="btn btn-transperant btn-bitbucket pull-right text-navy" ng-show="!recordExtenralFactorForm.$invalid"><i class="fa fa-check"></i> <span>Done</span></a>
+                        <a href ng-if="factor.editable" ng-click="resetFactor(factor, $index)" class="btn btn-transperant btn-bitbucket pull-right text-danger"><i class="fa fa-ban"></i> <span> Cancel</span></a>
+                    </div>
+                    <div class="panel-body" ng-if="!factor.editable">
+                        <p ng-bind-html="factor.description"></p>
+                        <h5 class="text-black">Assessment : <span class="text-info">{{factor.trend}}</span></h5>
+                    </div>
+                    <div class="panel-body" ng-if="factor.editable">
+                      <div ng-class="{ 'has-error': recordSubmitted && factor.editable.trend && !factor.editable.description }">
+                        <label class="text-black">Describe any external factors</label>
+                        <div summernote config="wysiwygConfig" height="100" name="factorDescription" class="summernote" ng-model="factor.editable.description" on-change="trimContents(contents)" required></div>
+                        <div ng-show="recordSubmitted && factor.editable.trend && !factor.editable.description">
+                          <div class="text-danger">This field is required</div>
+                        </div>
+                      </div>
+                      <div class="m-t-md" ng-class="{ 'has-error': recordSubmitted && factor.editable.description && !factor.editable.trend }">
+                        <label class="text-black pull-left m-t-xs" for="factorAssessments">Assessments 
+                          <a href tooltip="Click to see Legend" ng-click="showLegend('external_factors')"><i class="fa fa-lg fa-info-circle"></i></a> &nbsp &nbsp : &nbsp
+                        </label>
+                        <select chosen name="factorAssessments" id="factorAssessments" class="form-control" ng-model="factor.editable.trend" required ng-options="trend.code as trend.code for trend in enums.external_factors" style="width:200px" disable-search="true">
+                          <option value=""></option>
+                        </select>
+                        <div ng-show="recordSubmitted && factor.editable.description && !factor.editable.trend">
+                          <div class="text-danger">This field is required</div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+              </ng-form>
+            </div>
+          </div>
+        </div>
+        <div class="ibox">
+          <div class="ibox-title">
+            <h3 class="text-black f18 m0 pull-left">Risk category and Internal Controls</h3>
+            <div class="ibox-tools">
+              <button class="btn btn-success btn-xs" ng-click="addRisk()">Add New Risk</button>
+              <ibox-collapse></ibox-collapse>
+            </div>
+          </div>
+          <div class="ibox-content risk-rating-fields">
+            <div ng-repeat="risk in record.assessment track by $index">
+              <ng-form name="riskForm">
+                <div class="panel ui-corner-all panel-default">
+                    <div class="panel-heading ui-corner-all">
+                      <label class="text-black">Risk {{$index + 1}} </label>
+                      <a href ng-if="!factor.editable" ng-click="editRisk($index, risk)" class=" btn btn-transperant btn-bitbucket pull-right text-success"><i class="fa fa-pencil"></i><span> Edit</span></a>
+                      <a href ng-click="removeRisk($index)" class=" btn btn-transperant btn-bitbucket pull-right text-danger"><i class="fa fa-trash"> <span> Delete</span></i></a>
+                    </div>
+                    <div class="panel-body" style="border-bottom : 1px solid #ccc">
+                      <table class="table table-bordered risk-table">
+                        <thead>
+                          <tr>
+                            <th style="width: 15%">Category</th>
+                            <th style="width: 35%">Description</th>
+                            <th>Impact, $ Millions (AUD)</th>
+                            <th>Consequence</th>
+                            <th>Likelihood</th>
+                            <th>Rating</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{{risk.category}}</td>
+                            <td><span ng-bind-html='risk.risk'><span></td>
+                            <td>{{risk.initialAssessment.cost}}</td>
+                            <td>{{risk.initialAssessment.consequence}} <span class="text-muted">of 5</span></td>
+                            <td>{{risk.initialAssessment.likelihood}} <span class="text-muted">of 5</span></td>
+                            <td>{{risk.initialAssessment.rating}} <span class="text-muted">of 10</span>
+                              <div class="progress progress-mini">
+                                <div style="width: {{10*risk.initialAssessment.rating}}%;" class="progress-bar" rating-style="risk.initialAssessment.rating"></div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr ng-if="risk.controlledAssessment.rating">
+                            <td></td>
+                            <td><label>Controlled Assessment</label></td>
+                            <td>{{risk.controlledAssessment.cost}}</td>
+                            <td>{{risk.controlledAssessment.consequence}} <span class="text-muted">of 5</span></td>
+                            <td>{{risk.controlledAssessment.likelihood}} <span class="text-muted">of 5</span></td>
+                            <td>{{risk.controlledAssessment.rating}} <span class="text-muted">of 10</span>
+                              <div class="progress progress-mini">
+                                <div style="width: {{10*risk.controlledAssessment.rating}}%;" class="progress-bar" rating-style="risk.controlledAssessment.rating"></div>
+                              </div>
+                            </td>  
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="panel-body">
+                      <h3 class="text-black">Controls for Risk {{$index + 1}} </h3>
+                      <div class="panel ui-corner-all panel-default" ng-repeat="ctrl in selectedCtrls[$index] track by $index">
+                        <div class="panel-heading ui-corner-all">
+                          <label class="text-black">Control {{$index + 1}} </label>
+                            <!-- <a href ng-if="!factor.editable" ng-click="editControl(ctrl, $index)" class=" btn btn-transperant btn-bitbucket pull-right text-success"><i class="fa fa-pencil"></i><span> Edit</span></a> -->
+                            <a href ng-click="deleteCtrl($parent.$index, $index)" class=" btn btn-transperant btn-bitbucket pull-right text-danger"><i class="fa fa-trash"> <span> Delete</span></i></a>
+                        </div>
+                        <div class="panel-body">    
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th>ID</th>
+                                <th style="width: 50%">Title</th>
+                                <th>Status</th>
+                                <th>
+                                  <div class="tooltip-wrapper">
+                                    Effectiveness
+                                    <a href tooltip="Click to see Legend" ng-click="showLegend('control_effectiveness')"><i class="fa fa-lg fa-info-circle"></i></a>
+                                  </div>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{{ctrl._id}}</td>
+                                <td>{{ctrl.title}}</td>
+                                <td>{{ctrl.status}}</td>
+                                <td>
+                                  <select chosen disable-search="true" name="controlEffectiveness" class="form-control" ng-model="risk.controls[$index].effectiveness" ng-options="control_effectiveness.code as control_effectiveness.code for control_effectiveness in enums.control_effectiveness">
+                                    <option value=""></option>
+                                  </select>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="typeahead-wrapper pull-left" style="width:500px;">
+                        <input type="text" ng-model="selectedControl" placeholder="Start typing control title or control id and list of controls will be shown" typeahead="item as item.title for item in controls | filter: $viewValue | limitTo:20" typeahead-on-select="addControl($index, $item)" class="form-control">
+                        <div ng-show="!showResults" class="text-danger">Add at least one control</div>
+                      </div>
+                      <p class="text-muted pull-left m-l-lg  m-r-lg m-t-sm"> &mdash;&nbsp;OR&nbsp;&mdash;</p>
+                      <a class="btn btn-white btn-sm" href ng-click="createControl($index)"target="_blank">Add New Control</a>
+                    </div>
+                </div>
+            </ng-form>
+          </div>
+        </div>
+      </div>
+    </ng-form>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="ibox">
+          <div class="ibox-title">
+            <h3 class="text-black f18 m0 pull-left">Overall Ratings</h3>
+            <div class="ibox-tools">
+              <ibox-collapse></ibox-collapse>
+            </div>
+          </div>
+          <div class="ibox-content">
+            <div class="form-group">
+              <label class="col-sm-2 control-label"><br>Cost</label>
+              <div class="col-sm-3">
+                <label>Initial</label>
+                <input type="text" class="form-control" value="{{overall.initialCost | currency}}" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label>Current</label>
+                <input type="text" class="form-control" value="{{overall.controlledCost | currency}}" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label>Target</label>
+                <input type="text" class="form-control" value="{{overall.targetCost | currency}}" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Risk</label>
+              <div class="col-sm-3">
+                <label class="visible-xs">Initial</label>
+                <input type="text" class="form-control" rating-style="overall.initialRating" value="{{overall.initialRating}}" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label class="visible-xs">Current</label>
+                <input type="text" class="form-control" rating-style="overall.controlledRating" value="{{overall.controlledRating}}" disabled>
+              </div>
+              <div class="col-sm-3">
+                <label class="visible-xs">Target</label>
+                <input type="text" class="form-control" rating-style="overall.targetRating" value="{{overall.targetRating}}" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="ibox">
+        <item-attachments editable="true"></item-attachments>
+      </div>  
+      <div class="clearfix m-b-lg ">
+        <hr>
+        <div class="text-right">
+          <a class="btn btn-white text-muted m-r-sm" ui-sref="governance-record.view({recordId: record._id})" href style="border: 1px solid #e7eaec">Cancel</a>
+          <button type="submit" ng-click="saveRecord(recordForm)" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

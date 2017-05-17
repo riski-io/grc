@@ -1,0 +1,63 @@
+<blockquote>
+  <h3 class="text-info">Action Item {{item.actionItemId}}</h3> 
+</blockquote>
+<div class="ibox">
+  <div class="ibox-content">
+    <div class="row m-b-md">
+      <div class="col-xs-12">
+        <h4>{{item.title}}</h4> </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <dl class="dl-horizontal"> 
+          <dt>Status</dt>
+          <dd>{{item.status}}</dd> 
+          <dt>Priority</dt>
+          <dd>{{item.priority}}</dd> 
+          <dt>Created By</dt>
+          <dd>{{item.createdBy.display_name}}</dd> 
+          <dt>Assignee/dt>
+          <dd>{{item.assignedTo.display_name}}</dd> 
+          <dt>Related Entity:</dt>
+            <dd>
+            {{#if_eq item.refEntityType "record"}}
+                <a href="{{site_url}}/governance-record/{{item.refEntityId}}" target="_blank">{{item.refEntityId}}</a>
+            {{else}}
+                <a href="{{site_url}}/{{item.refEntityType}}/{{item.refEntityId}}" target="_blank">{{item.refEntityId}}</a>
+            {{/if_eq}}
+            </dd>
+        </dl>
+      </div>
+      <div class="col-xs-6">
+        <dl class="dl-horizontal">
+          <dt>Create Date:</dt>
+          <dd>{{formatDate item.createdDate 'short'}}</dd>
+          <dt>Due Date:</dt>
+          <dd>{{formatDate  item.dueDate 'short'}}</dd>
+          <dt>Overall % Complete</dt>
+          <dd>
+          	<div class="progress">
+			  <div class="progress-bar progress-bar-success" role="progressbar" style="width: {{item.percentComplete}}%">
+			  	{{item.percentComplete}}%
+			  </div>
+			</div>
+		  </dd>
+          <dt>Version:</dt>
+          <dd>{{item.version}}</dd> 
+        </dl>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <dl class="dl-horizontal">
+          <dt>Context : </dt>
+          <dd>{{{item.description}}}</dd>
+        </dl>
+        <dl class="dl-horizontal">
+          <dt>Action Required : </dt>
+          <dd>{{{item.actionRequired}}}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>

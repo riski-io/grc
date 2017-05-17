@@ -1,0 +1,115 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <h2>Search Page</h2>
+  <ol class="breadcrumb">
+    <li>
+      <a href="/">Home</a>
+    </li>
+    <li class="active">
+      <strong>Search Page</strong>
+    </li>
+  </ol>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight searchResults">
+  <div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-5">
+      <div class="file-manager">
+        <div class="space-25"></div>
+        <h5 ng-if="facets.type.buckets.length">Type</h5>
+        <ul class="folder-list m-b-md">
+          <li ng-repeat="type in facets.type.buckets">
+            <label class="checkbox-control">
+             <input type="checkbox" checklist-model="filters._type" checklist-value="type.key" id="checkbox-{{$index}}" checklist-change="updateSelectedFacets()" name="type"> 
+              <span>{{typeMap[type.key].title}} ({{type.doc_count}})</span>
+            </label>
+          </li>
+        </ul>
+        <h5 ng-if="facets.category.buckets.length">Category</h5>
+        <ul  class="folder-list m-b-md">
+          <li ng-repeat="category in facets.category.buckets">
+            <label class="checkbox-control">
+             <input type="checkbox" checklist-model="filters.category" checklist-value="category.key" id="checkbox-{{$index}}" checklist-change="updateSelectedFacets()" name="category"> 
+              <span>{{category.key}} ({{category.doc_count}})</span>
+            </label>
+          </li>
+        </ul>
+        <h5 ng-if="facets.status.buckets.length">Status</h5>
+        <ul  class="folder-list m-b-md">
+          <li ng-repeat="status in facets.status.buckets">
+            <label class="checkbox-control">
+              <input type="checkbox" checklist-model="filters.status" checklist-value="status.key" id="checkbox-{{$index}}" checklist-change="updateSelectedFacets()" name="status"> 
+              <span>{{status.key}} ({{status.doc_count}})</span>
+            </label>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-7">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content" ng-if="isLoadingFilters">Loading...</div>
+        <div class="ibox-content"  ng-if="!isLoadingFilters">
+          <h2>
+            {{result.hits.total | number}} results found for: <span class="text-navy">"{{query}}"</span>
+          </h2>
+          <div ng-show="filters._type.length">
+            <em>Filtered by Type:</em>
+            <ul>
+              <li ng-repeat="filter in filters._type">{{typeMap[filter].title}}</li>
+            </ul>
+          </div>
+          <div ng-show="filters.category.length">
+            <em>Filtered by Category:</em>
+            <ul>
+              <li ng-repeat="filter in filters.category">{{filter}}</li>
+            </ul>
+          </div>
+          <div ng-show="filters.status.length">
+            <em>Filtered by Status:</em>
+            <ul>
+              <li ng-repeat="filter in filters.status">{{filter}}</li>
+            </ul>
+          </div>
+          <small>Request time  ({{result.took / 1000| number}} seconds)</small>
+
+          <div class="search-form">
+            <form ng-submit="search(true)" autocomplete="off">
+              <div class="input-group">
+                <input type="text" placeholder="Search for something..." name="search" ng-model="query" class="form-control input-lg">
+                <div class="input-group-btn">
+                  <button class="btn btn-lg btn-primary" type="submit">Search</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div>
+            <div ng-repeat="item in result.hits.hits">
+              <div class="hr-line-dashed"></div>
+              <div class="search-result">
+                <h3>
+                  <a ng-href="{{typeMap[item._type].url}}{{item._source.id}}">{{item._source.id}}: 
+                    <span ng-bind-html="item.highlight.title || item._source.title | to_trusted"></span>
+                  </a>
+                </h3>
+                <p ng-bind-html="item.highlight.description || item.highlight.actionRequired || tem._source.description | to_trusted"></p>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Owner Org Unit:</strong> {{item._source.responsibleOrg.orgName}}
+                  </div>
+                  <div class="col-md-4">
+                    <strong>Status:</strong> {{item._source.status}}
+                  </div>
+                  <div class="col-md-4">
+                    <strong>Type:</strong> {{typeMap[item._type].title}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="hr-line-dashed"></div>
+          </div>
+          <div class="text-center">
+            <uib-pagination  class="pagination" total-items="result.hits.total" items-per-page="itemsPerPage" ng-model="currentPage" max-size="10" rotate="true" ng-change="search(false, currentPage)"></uib-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

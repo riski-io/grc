@@ -1,0 +1,32 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2 class="pull-left">Help Pages</h2>
+    <button class="btn btn-primary pull-right m-t-sm" ui-sref="help.new">Create</button>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-if="!helpPages.length">
+  <div class="ibox float-e-margins">
+    <div class="ibox-content text-center">
+    	<h3>No help pages available</h3>
+    </div>
+  </div>
+</div>
+
+<div class="row m-t-lg">
+	<div class="col-xs-3" ng-repeat="page in helpPages">
+		<div class="file-box">
+	        <div class="file">
+	            <a ui-sref="help.view({id : page._id})">
+	                <span class="corner"></span>
+	                <div class="icon">
+	                    <i class="fa {{pageTypes[page.pageType].icon}}"></i>
+	                </div>
+	                <div class="file-name">
+	                    {{page.title}}
+	                </div>
+	            </a>
+	        </div>
+    	</div>
+	</div>
+</div>

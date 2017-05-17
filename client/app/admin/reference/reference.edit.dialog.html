@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="cancel()">&times;</button>
+  <h4 class="modal-title">
+    <span class="fa fa-pencil-square"></span> {{isEdit? 'Edit' : 'Create'}} concept
+  </h4>
+</div>
+
+<form ng-submit="save()" name="conceptForm">
+  <div class="modal-body">
+    <div ng-include="'app/alert.html'"></div>
+    <div class="form-group">
+      <label class="control-label" for="value">Concept Name</label>
+      <input id="value" type="text" ng-model="concept.title" class="form-control" required ng-change="concept.key = slugify(concept.title)">
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="value">Concept Key</label>
+      <input id="value" type="text" ng-model="concept.key" class="form-control" readonly="">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-disabled="conceptForm.$invalid">Save</button>
+    <button type="button" class="btn btn-white" ng-click="cancel()">Cancel</button>
+  </div>
+</form>

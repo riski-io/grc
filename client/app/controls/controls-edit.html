@@ -1,0 +1,250 @@
+<div class="modal fade" id="heirarchy">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4> </div>
+      <div class="modal-body">
+        <div ui-tree="options" data-drag-enabled="false">
+          <ol ui-tree-nodes ng-model="orgTree">
+            <li ng-repeat="item in orgTree" ui-tree-node ng-include="'app/tree.html'" collapsed="true"></li>
+          </ol>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2 ng-if="$state.is('control.edit')">Enterprise control {{control._id}}</h2>
+    <h2 ng-if="$state.is('control.new')">New Enterprise Control</h2>
+  </div>
+</div>
+<div class="wrapper wrapper-content" ng-show="isLoading">
+  <div class="text-center">
+    <h2>Loading....</h2>
+    <div class="block-spinner"></div>
+  </div>
+</div>
+<div class="wrapper wrapper-content" ng-hide="isLoading">
+  <div class="ibox">
+    <div class="ibox-content">
+      <ng-form name="controlForm" ng-submit="saveControl(controlForm)" novalidate>
+        <div class="form-horizontal">
+          <div class="form-group">
+            <div class="col-sm-12" ng-class="{ 'has-error': controlSubmitted && controlForm.controlTitle.$error.required }">
+              <label for="controlTitle">Control Title</label>
+              <input type="text" name="controlTitle" id="controlTitle" ng-model="control.title" placeholder="Control Title" class="form-control" required>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlTitle.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlStatus.$error.required }">
+              <label for="controlStatus">Control Status</label>
+              <select chosen disable-search="true" name="controlStatus" id="controlStatus" class="form-control" ng-model="control.status" ng-init="control.status = control.status || 'new'" ng-options="status.code as status.title for status in enums.control_status" required>
+                <option value=""></option>
+              </select>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlStatus.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlCategory.$error.required }">
+              <label for="controlCategory">Category</label>
+              <select chosen disable-search="true"  name="controlCategory" id="controlCategory" class="form-control" ng-model="control.category" ng-options="riskCategory.code as riskCategory.title for riskCategory in enums.risk_category" required>
+                <option value=""></option>
+              </select>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlCategory.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlResponsibleOrg.$error.required }">
+              <label for="controlResponsibleOrg">Responsible Organization</label>
+              <div class="input-group">
+                <input class="form-control" name="controlResponsibleOrg" readonly="" ng-model="control.responsibleOrg.orgName" id="controlResponsibleOrg" required>
+                 <span class="input-group-btn">
+                  <a class="btn btn-info" data-toggle="modal" data-target="#heirarchy"><span class="fa fa-filter" ></span>
+                  </a>
+                </span>
+              </div>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlResponsibleOrg.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlResponsibleUser.$error.required }">
+              <label for="controlResponsibleUser">Responsible User</label>
+              <select class="form-control" required chosen name="controlResponsibleUser" id="controlResponsibleUser" ng-model="control.responsibleUser" ng-options="user as user.display_name for user in users track by user._id" ng-init="control.responsibleUser = control.responsibleUser || currentUser">
+                <option value=""></option>
+              </select>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlResponsibleUser.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-6">
+              <label for="reviewTitle">Tags</label>
+              <input type="text" name="reviewTitle" id="reviewTitle" class="form-control" placeholder="Comma separated control's tags" ng-model="tagString.value" ng-change="setTags()">
+            </div>
+            <div class="col-sm-3" ng-class="{ 'has-error': controlSubmitted && controlForm.controlEffectiveFrom.$error.required }">
+              <label for="controlEffectiveFrom">Effective From</label>
+              <div class="input-group date">
+                <input type="text" name="controlEffectiveFrom" class="form-control" placeholder="dd-MMM-yyyy" id="controlEffectiveFrom" ng-focus="effectiveFromOpened = true" uib-datepicker-popup="dd-MMM-yyyy" ng-model="control.effectiveFrom" is-open="effectiveFromOpened" show-button-bar="false" required/>
+                <span class="input-group-addon" ng-click="effectiveFromOpened=true;$event.stopPropagation();"><i class="fa fa-calendar"></i></span>
+              </div>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlEffectiveFrom.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label for="controlEffectiveTo">Effective To</label>
+              <div class="input-group date">
+                <input type="text" class="form-control" placeholder="dd-MMM-yyyy" id="controlEffectiveTo" ng-focus="effectiveToOpened = true" uib-datepicker-popup="dd-MMM-yyyy" ng-model="control.effectiveTo" is-open="effectiveToOpened" show-button-bar="false"/>
+                <span class="input-group-addon" ng-click="effectiveToOpened=true;$event.stopPropagation();"><i class="fa fa-calendar"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12" ng-class="{ 'has-error': controlSubmitted && controlForm.controlDescription.$error.required }">
+              <label for="reviewTitle">Description</label>
+              <div summernote config="wysiwygConfig" height="100" class="summernote" name="controlDescription" ng-model="control.description" required></div>
+              <div ng-show="controlSubmitted">
+                <div ng-show="controlForm.controlDescription.$error.required" class="text-danger">This field is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-form>
+    </div>
+  </div>
+  <div class="ibox">
+    <div class="ibox-content">
+      <div class="panel blank-panel ui-tab">
+        <uib-tabset>
+          <uib-tab heading="Impacted Risks">
+            <div class="wrapper wrapper-content" ng-show="isLoadingControlRecords">
+              <div class="text-center">
+                <h2>Loading Impact Risks....</h2>
+                <div class="block-spinner"></div>
+              </div>
+            </div>
+            <div ng-hide="isLoadingControlRecords">
+              <table class="table table-bordered table-hover table-control-records" ng-show="impactedRecords">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th class="text-center">Init. Rating</th>
+                    <th class="text-center">Contrl. Rating</th>
+                    <th class="text-center">Targ. Rating</th>
+                    <th>Updated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="linked-row" ng-repeat="record in impactedRecords" ui-sref="governance-record.view({recordId: record._id})">
+                    <td class="text-nowrap">{{record._id}}</td>
+                    <td>{{record.title}}</td>
+                    <td>{{record.category}}</td>
+                    <td>{{record.status}}</td>
+                    <td class="text-center">{{record.overallAssessment.initialRating}}</td>
+                    <td class="text-center">{{record.overallAssessment.controlledRating}}</td>
+                    <td class="text-center">{{record.overallAssessment.targetRating}}</td>
+                    <td class="text-nowrap">{{record.updatedAt| date:'dd-MMM-yyyy'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div ng-hide="impactedRecords">
+                <p class="empty-list">No impacted risks yet</p>
+              </div>
+            </div>
+          </uib-tab>
+          <uib-tab heading="Comments">
+            <item-comments editable="true" allowed="rolePermissions.control.comment"></item-comments>
+          </uib-tab>
+          <uib-tab heading="Files">
+            <item-attachments></item-attachments>
+          </uib-tab>
+          <uib-tab heading="Associated Action Items">
+            <related-actions-items></related-actions-items>
+          </uib-tab>
+          <!--@TODO: Add watchers to action item detail-->
+          <uib-tab heading="Change History">
+            <div ng-controller="HistoryController as history">
+              <div class="ibox-content row history-changes">
+                <div class="history-change" ng-repeat="historyItem in entityChangesList">
+                  <div id="note-{{$index + 1}}">
+                    <p>#{{$index + 1}} - by
+                      <a href ui-sref="member.view({userId: change.changedBy._id})" target="_blank">{{historyItem.changedBy.display_name}}</a> on {{historyItem.changeDate| date:'dd-MMM-yyyy'}}
+                    </p>
+                    <ul>
+                      <li ng-show="historyItem.changes.title">
+                        <strong>Title</strong>:
+                        <span ng-bind-html="historyItem.changes.title | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.status">
+                        <strong>Status</strong>:
+                        <span ng-bind-html="historyItem.changes.status | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.effectiveFrom">
+                        <strong>EffectiveFrom Date</strong>:
+                        <span ng-bind-html="historyItem.changes.effectiveFrom | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.effectiveTo">
+                        <strong>EffectiveTo Date</strong>:
+                        <span ng-bind-html="historyItem.changes.effectiveTo | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.responsibleOrg">
+                        <strong>Responsible Org</strong>:
+                        <span ng-bind-html="historyItem.changes.responsibleOrg | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.responsibleUser">
+                        <strong>Responsible User</strong>:
+                        <span ng-bind-html="historyItem.changes.responsibleUser | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.category">
+                        <strong>Category</strong>:
+                        <span ng-bind-html="historyItem.changes.category | to_trusted"></span>
+                      </li>
+                      <li ng-show="historyItem.changes.tag">
+                        <strong>Tags</strong>:
+                        <ul>
+                          <li ng-repeat="tag in historyItem.changes.tag">
+                            <span ng-bind-html="tag | to_trusted"></span>
+                          </li>
+                        </ul>
+                      </li>
+                      <li ng-show="historyItem.changes.description">
+                        <strong>description</strong>:
+                        <span ng-bind-html="historyItem.changes.description | to_trusted"></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div ng-hide="entityChangesList">
+                  <p class="empty-list">No history changes</p>
+                </div>
+              </div>
+            </div>
+          </uib-tab>
+        </uib-tabset>
+      </div>
+    </div>
+  </div>
+  <div class="ibox">
+    <div class="ibox-content">
+      <div class="form-group clearfix">
+        <div class="text-right">
+          <a class="btn btn-white" ui-sref="control.view({controlId: control._id})" href>Cancel</a>
+          <button type="button" class="btn btn-primary" ng-click="saveControl(controlForm)">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

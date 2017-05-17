@@ -1,0 +1,36 @@
+<div class="permissions-request col-sm-12 col-md-10 col-lg-8">
+    <h1>Oops!</h1>
+
+    <div class="error-desc">
+        <p>It looks like you aren't a member of any organisation unit.<br>
+        In order to see governance records, controls, and reviews in this system, you must be granted membership of at least one organisation unit.</p>
+
+        <p>If you believe you should have access to the governance system then please select your organisation unit and request membership:</p>
+    </div>
+    <div class="clearfix" ng-include="'app/alert.html'"></div>
+    <div class="m-t permissions-request-form">
+        <div class="row">
+            <div class="col-md-2">
+                <label for="orgUnit">Org Unit:</label>
+            </div>
+            <div class="col-md-4">
+                <select name="orgUnit" chosen id="orgUnit" class="form-control" ng-model="invitation.orgUnit"  ng-options="unit as unit.orgName for unit in orgUnits track by unit.orgUnitId" ng-change="getOrgDetails(invitation.orgUnit)">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="col-md-4" ng-show="invitation.orgUnit">
+                <select name="manager" chosen id="manager" class="form-control" ng-model="invitation.recipient"  ng-options="user as (user.display_name +'('+ user.email+')') for user in orgDetails.managerList" ng-if="orgUnit.managerList.length">
+                    <option value=""></option>
+                </select>
+                <select name="admin" chosen id="admin" class="form-control" ng-model="invitation.recipient"  ng-options="user as (user.display_name +' ( '+ user.email+' )') for user in admins" ng-if="!orgUnit.managerList.length">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-md-offset-2">
+            <button type="submit" class="btn btn-primary m-t" ng-click="requestMembership()" ng-desabled="!invitation.recipient && !invitation.orgUnit">Request Membership</button>
+          </div>
+        </div>
+    </div>
+</div>

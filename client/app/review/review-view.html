@@ -1,0 +1,165 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2 class="pull-left">Review # {{review._id|| $stateParams.reviewId}} </h2>
+    <div class="page-actions noprint" ng-show="review._id">
+      <i tooltip="Export as PDF" class=" fa-2x act-icon fa fa-file-pdf-o" download-pdf="review" type="review-details"></i>
+      <i tooltip="Print page" print-page print-element-id="main-content" class="fa fa-print fa-2x act-icon"></i>
+      <a ng-if="rolePermissions.review.delete" tooltip-placement="bottom" tooltip="remove this review" class="btn btn-xs btn-primary" href ng-click="removeReview(review._id);" ><i class="fa fa-remove fa-fw"></i> delete</a>
+      <a ng-if="rolePermissions.review.edit" tooltip-placement="bottom" tooltip="edit this review" class="btn btn-xs btn-primary" href ui-sref="review.edit({ reviewId: review._id})"><i class="fa fa-pencil-square-o fa-fw"></i> edit</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-show="isLoading">
+  <div class="text-center">
+    <h2>Loading....</h2>
+    <div class="block-spinner"></div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-hide="isLoading">
+  <div class="ibox">
+    <div class="ibox-content">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="m-b-md">
+            <h2>{{review.title}}</h2>
+          </div>
+          <dl class="dl-horizontal">
+            <dt>Status:</dt>
+            <dd>{{review.status}}</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-5">
+          <dl class="dl-horizontal">
+            <dt>Org Unit:</dt>
+            <dd>{{review.responsibleOrg.orgName}}</dd>
+            <dt>Scheduled By: </dt>
+            <dd>{{review.scheduledBy.givenName}} {{review.scheduledBy.familyName}}</dd>
+            <dt>Review type:</dt>
+            <dd>{{review.reviewType}}</dd>
+            <dt>Version:</dt>
+            <dd>{{review.version}}</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <dl class="dl-horizontal">
+            <dt>Description</dt>
+            <dd ng-bind-html="description"></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-9">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div class="ibox-title"><h3>Associations</h3></div>
+            <div class="ibox-content">
+              <div class="panel blank-panel ui-tab">
+                <uib-tabset>
+                  <uib-tab heading="Associated Records">
+                    <h3 ng-show="review.recordsForReview">Associated Records:</h3>
+                    <table class="table table-striped table-bordered table-hover" ng-show="review.recordsForReview">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Title</th>
+                          <th>Category</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="linked-row" ng-repeat="record in review.recordsForReview" ng-click="goToRecord(record.recordId)">
+                          <td>{{record.recordId}}</td>
+                          <td>{{record.title}}</td>
+                          <td>{{record.category}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p class="empty-list" ng-hide="review.recordsForReview">No records for review</p>
+                  </uib-tab>
+                  <uib-tab heading="Members Comments">
+                    <item-comments allowed="rolePermissions.review.comment"></item-comments>
+                  </uib-tab>
+                  <uib-tab heading="Associated Action Items">
+                    <related-actions-items related-action-items="review.relatedActionItems"></related-actions-items>
+                  </uib-tab>
+                  <uib-tab heading="Change History">
+                    <div ng-controller="HistoryController as history">
+                      <div class="ibox-content row history-changes">
+
+                        <div class="history-change" ng-repeat="historyItem in entityChangesList">
+                          <div id="note-{{$index + 1}}">
+                            <p>#{{$index + 1}} - by <a href ui-sref="member.view({userId: change.changedBy._id})" target="_blank">{{historyItem.changedBy.givenName}} {{historyItem.changedBy.familyName}}</a> on {{historyItem.createdAt| date:'dd-MMM-yyyy'}}</p>
+                            <ul>
+                              <li ng-if="historyItem.changes.title">
+                                <strong>Title</strong>: <span ng-bind-html="historyItem.changes.title | to_trusted"></span>
+                              </li>
+                              <li ng-if="historyItem.changes.status">
+                                <strong>Status</strong>: <span ng-bind-html="historyItem.changes.status | to_trusted"></span>
+                              </li>
+                              <li ng-if="historyItem.changes.responsibleOrg">
+                                <strong>Org Unit</strong>: <span ng-bind-html="historyItem.changes.responsibleOrg | to_trusted"></span>
+                              </li>
+                              <li ng-if="historyItem.changes.reviewType">
+                                <strong>Review Type</strong>: <span ng-bind-html="historyItem.changes.reviewType | to_trusted"></span>
+                              </li>
+                              <li ng-if="historyItem.changes.description">
+                                <strong>Description</strong>: <span ng-bind-html="historyItem.changes.description | to_trusted"></span>
+                              </li>
+                              <li ng-if="historyItem.changes.participantList">
+                                <strong>Participants</strong>
+                                <ul>
+                                  <li ng-repeat="participant in historyItem.changes.participantList"><span ng-bind-html="participant.display_name | to_trusted"></span> </span></li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div ng-hide="entityChangesList"><p class="empty-list">No history changes</p></div>
+                      </div>
+                    </div>
+                  </uib-tab>
+                </uib-tabset>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="ibox">
+        <div class="ibox-title">
+          <h3>Attachments</h3>
+        </div>
+        <div class="ibox-content">
+          <item-attachments></item-attachments>
+        </div>
+      </div>
+      <div class="ibox">
+        <div class="ibox-title">
+          <h3>Participants</h3>
+        </div>
+        <div class="ibox-content">
+          <ol class="member-list">
+            <li ng-repeat="participant in review.participantList">
+              <a href ui-sref="member.view({userId: participant._id})" target="_blank">{{participant.display_name}}</a>
+            </li>
+          </ol>
+          <div ng-hide="review.participantList.length">
+            <p class="empty-list">No participants</p>
+            <div class="hr-line-dashed"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

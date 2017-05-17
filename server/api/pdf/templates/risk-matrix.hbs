@@ -1,0 +1,39 @@
+
+
+<blockquote >
+    <h3 class="text-primary">Risk Matrix for {{orgUnit.orgName}}</h3>
+</blockquote>
+
+<img src="{{{image.data}}}" width="{{image.width}}px" height="{{image.height}}" class="img-responsive center-block">
+
+<h4 class="text-primary mt20">Related Records</h4>
+<table class="table table-bordered table-striped mt20">
+    <thead> 
+        <th>ID</th> 
+        <th>Title</th> 
+        <th>Category</th> 
+        <th>Unit</th> 
+        <th>Status</th> 
+        <th>Review Type</th> 
+        <th>Cns</th> 
+        <th>Lik</th> 
+        <th>Rtg</th> 
+        <th>Updated</th> 
+    </thead> 
+    <tbody> 
+        {{#items}} 
+        <tr> 
+            <td class="text-nowrap"><a href="{{site_url}}/governance-record/{{recordId}}" target="_blank">{{recordId}}</a></td> 
+            <td>{{title}}</td> 
+            <td>{{category}}</td> 
+            <td>{{responsibleOrg.orgName}}</td> 
+            <td>{{status}}</td> 
+            <td>{{reviewType}}</td> 
+            <td>{{overallAssessment.controlledConsequence}}</td> 
+            <td>{{overallAssessment.controlledLikelihood}}</td> 
+            <td>{{overallAssessment.controlledRating}}</td>
+            <td>{{formatDate updatedAt 'short'}}</td>
+        </tr> 
+        {{/items}} 
+    </tbody> 
+</table> 

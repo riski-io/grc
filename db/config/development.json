@@ -1,0 +1,5 @@
+{
+  "mongoUri": "mongodb://<user>:<password>@<port>:<host>/<database>",
+  "migrationCollection" : "migrations",
+  "migrationsDir": "./db/migrations"
+}

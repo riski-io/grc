@@ -1,0 +1,24 @@
+
+
+.p-t-xxl{
+	padding-top : 100px;
+}
+.auth0-lock-custom-icon {
+  width: 22px;
+  top: 8px !important;
+  left: 9px !important;
+  opacity: 0.5;
+} 
+
+#login-container{
+    .auth0-lock.auth0-lock .auth0-lock-header-logo{
+      width: auto;
+      height: 32px;
+      margin-top: 32px;
+    }
+}
+.auth0-lock-custom-icon.img {
+  width: 22px;
+  top: 8px;
+  left: 9px;
+}

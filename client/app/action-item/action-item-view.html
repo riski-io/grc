@@ -1,0 +1,151 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2 class="pull-left">Action Item # {{actionItem._id|| $stateParams.actionItemId}}</h2>
+    <div class="page-actions noprint" ng-show="actionItem._id">
+      <i tooltip="Export as PDF" class=" fa-2x act-icon fa fa-file-pdf-o" download-pdf="actionItem" type="action-item-details"></i>
+      <i tooltip="Print page" print-page print-element-id="main-content" class="fa fa-print fa-2x act-icon"></i>
+      <a ng-if="rolePermissions.action_item.delete"tooltip-placement="bottom" tooltip="remove this action item" class="btn btn-xs btn-primary" href ng-click="removeActionItem(actionItem._id);" ><i class="fa fa-remove fa-fw"></i> delete</a>
+      <a ng-if="rolePermissions.action_item.edit" tooltip-placement="bottom" tooltip="edit this control" class="btn btn-xs btn-primary pull-right" ui-sref="action-item.edit({ actionItemId: actionItem._id})"><i class="fa fa-pencil-square-o fa-fw"></i> edit</a>    </div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-show="isLoading">
+  <div class="text-center">
+    <h2>Loading....</h2>
+    <div class="block-spinner"></div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-hide="isLoading">
+  <div class="ibox">
+    <div class="ibox-content">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="m-b-md">
+            <h2>{{actionItem.title}}</h2>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-lg-5">
+          <dl class="dl-horizontal">
+            <dt>Status:</dt>
+            <dd>{{actionItem.status}}</dd>
+            <dt>Priority:</dt>
+            <dd>{{actionItem.priority}}</dd>
+            <dt>Created By:</dt>
+            <dd>{{actionItem.createdBy.display_name}}</dd>
+            <dt>Assignee:</dt>
+            <dd>{{actionItem.assignedTo.display_name}}</dd>
+            <dt>Related Entity:</dt>
+            <dd>
+              <a href ui-sref="review.view({reviewId:actionItem.refEntityId})" ng-if="actionItem.refEntityType == 'review'">{{actionItem.refEntityId}}</a>
+              <a href ui-sref="governance-record.view({recordId:actionItem.refEntityId})" ng-if="actionItem.refEntityType == 'record'">{{actionItem.refEntityId}}</a>
+              <a href ui-sref="control.view({controlId:actionItem.refEntityId})" ng-if="actionItem.refEntityType == 'control'">{{actionItem.refEntityId}}</a>
+            </dd>
+          </dl>
+        </div>
+        <div id="cluster_info" class="col-lg-7">
+          <dl class="dl-horizontal">
+            <dt>Created Date:</dt>
+            <dd>{{actionItem.createdAt| date: 'dd-MMM-yyyy'}}</dd>
+            <dt>Due Date:</dt>
+            <dd>{{actionItem.dueDate| date: 'dd-MMM-yyyy'}}</dd>
+            <dt>Overall % Complete:</dt>
+            <dd>
+            <uib-progressbar class="progress-striped m-b-none" value="actionItem.percentComplete"><b>{{actionItem.percentComplete}}%</b></uib-progressbar>
+            </dd>
+            <dt>Version:</dt>
+            <dd>{{actionItem.version}}</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <dl class="dl-horizontal">
+            <dt>Context:</dt>
+            <dd ng-bind-html="description"></dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt>Action Required:</dt>
+            <dd ng-bind-html="actionRequired"></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-9">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="ibox">
+            <div class="ibox-content">
+              <div class="panel blank-panel ui-tab">
+                <uib-tabset>
+                  <uib-tab heading="Member Comments">
+                    <item-comments allowed="rolePermissions.action_item.comment"></item-comments>
+                  </uib-tab>
+                  <uib-tab heading="Change History">
+                    <div ng-controller="HistoryController as history">
+                      <div class="history-changes">
+
+                        <div class="history-change" ng-repeat="historyItem in entityChangesList">
+                          <div id="note-{{$index + 1}}">
+                            <p>#{{$index + 1}} - by <a href ui-sref="member.view({userId: change.changedBy._id})" target="_blank">{{historyItem.changedBy.display_name}}</a> on {{historyItem.changeDate| date:'dd-MMM-yyyy'}}</p>
+                            <ul>
+                              <li ng-show="historyItem.changes.title">
+                                <strong>Title</strong>: <span ng-bind-html="historyItem.changes.title | to_trusted"></span>
+                              </li>
+                              <li ng-show="historyItem.changes.assignedTo">
+                                <strong>Assignee</strong>:
+                                <span ng-bind-html="historyItem.changes.assignedTo.display_name | to_trusted"></span>
+                              </li>
+                              <li ng-show="historyItem.changes.description">
+                                <strong>Context</strong>: <span ng-bind-html="historyItem.changes.description | to_trusted"></span>
+                              </li>
+                              <li ng-show="historyItem.changes.actionRequired">
+                                <strong>Action Required</strong>: <span ng-bind-html="historyItem.changes.actionRequired | to_trusted"></span>
+                              </li>
+                              <li ng-show="historyItem.changes.percentComplete">
+                                <strong>Overall % Complete</strong>: <span ng-bind-html="historyItem.changes.percentComplete | to_trusted"></span>%
+                              </li>
+                              <li ng-show="historyItem.changes.dueDate">
+                                <strong>Due Date</strong>: <span ng-bind-html="historyItem.changes.dueDate | to_trusted"></span>
+                              </li>
+                              <li ng-show="historyItem.changes.status">
+                                <strong>Status</strong>: <span ng-bind-html="historyItem.changes.status | to_trusted"></span>
+                              </li>
+                              <li ng-show="historyItem.changes.refEntityType">
+                                <strong>refEntityType</strong>: <span ng-bind-html="historyItem.changes.refEntityType | to_trusted"></span>
+                              </li>
+                              <li ng-show="historyItem.changes.refEntityId">
+                                <strong>refEntityId</strong>: <span ng-bind-html="historyItem.changes.refEntityId | to_trusted"></span>
+                              </li>
+                              <li ng-show="historyItem.changes.priority">
+                                <strong>Priority</strong>: <span ng-bind-html="historyItem.changes.priority | to_trusted"></span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div ng-hide="entityChangesList"><p class="empty-list">No history changes</p></div>
+                      </div>
+                    </div>
+                  </uib-tab>
+                </uib-tabset>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <!--@TODO: Add watchers to action item detail-->
+      <div class="ibox">
+        <item-attachments></item-attachments>
+      </div>
+    </div>
+  </div>
+</div>

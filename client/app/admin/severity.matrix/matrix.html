@@ -1,0 +1,46 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2>Admin: Reference Data</h2>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content">
+  <div class="ibox float-e-margins">
+    <div class="ibox-content">
+      <div class="table-responsive">
+        <table class="table no-margins severity-matrix">
+          <thead>
+            <tr>
+              <td>&nbsp</td>
+              <th colspan="5" style="text-align: center">Risk Severity Rating</th>
+            </tr>
+            <tr>
+              <th>Risk Category</th>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="item in items">
+              <td>
+                <strong>{{item.title}}</strong>
+                <span class="fa fa-info-circle text-info" uib-tooltip="{{item.description}}"></span>
+              </td>
+              <td class="cell" ng-repeat="test in [] | range:5" ng-class="{'no-data': isNoData = !matrixItems[item.id][$index+1]}">
+                <span ng-hide="isNoData">{{matrixItems[item.id][$index+1].description | characters: 150}}</span>
+                <span ng-show="isNoData">No Description provided...</span>
+                <div class="actions">
+                  <a href="javascript:void(0);"><i class="fa fa-pencil-square" ng-click="editMatrixItem(item, $index+1, matrixItems[item.id][$index+1])"></i></a>
+                  <a href="javascript:void(0);" ng-hide="isNoData"><i class="fa fa-remove" ng-click="removeMatrixItem(item, $index+1)"></i></a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

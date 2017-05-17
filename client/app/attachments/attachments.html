@@ -1,0 +1,32 @@
+<div class="comments-block">
+    <div class="wrapper wrapper-content" ng-show="attachmentsIsLoading">
+        <div class="text-center">
+            <h2>{{loadingText}}</h2>
+            <div class="block-spinner"></div>
+        </div>
+    </div>
+
+    <div ng-hide="attachmentsIsLoading">
+        <ul class="list-unstyled files-list">
+            <li ng-repeat="attachment in attachmentsList">
+                <a href ng-if="editable === true" class="pull-right" ng-click="removeFile(attachment.attachmentId, $index)"><i class="fa fa-remove"></i></a>
+                <a class="file-name" href="{{attachment.url}}" tooltip-placement="left" tooltip="Added at {{attachment.createdAt | date:'dd-MMM-yyyy'}}" title="{{attachment.displayName}}">{{attachment.displayName}}</a>
+            </li>
+        </ul>
+
+        <div ng-if="isAvaliable" ng-hide="attachmentsList.length">
+            <p class="empty-list text-muted">No files yet</p>
+        </div>
+
+        <div ng-if="!isAvaliable">
+            <p class="empty-list text-muted">File upload will be available after the {{entityType || 'item'}} is created.</p>
+        </div>
+
+        <div class="text-center" ng-if="editable === true && isAvaliable">
+            <button class="btn btn-lg btn-success m-b-md" ng-file-select ng-multiple="true" allow-dir="true" ng-file-change="upload($files)">Upload Files</button>
+        </div>
+
+
+    </div>
+
+</div>

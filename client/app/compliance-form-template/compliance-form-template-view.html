@@ -1,0 +1,82 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-sm-12">
+    <h2 class="pull-left">Compliance Form Template # {{template._id|| $stateParams.id}} </h2>
+    <div class="page-actions noprint" ng-show="template._id">
+      <i tooltip="Export as PDF" class=" fa-2x act-icon fa fa-file-pdf-o" download-pdf="template" type="template-details"></i>
+      <i tooltip="Print page" print-page print-element-id="main-content" class="fa fa-print fa-2x act-icon"></i>
+      <a tooltip-placement="bottom" tooltip="remove this template" class="btn btn-xs btn-primary" href ng-click="changeStatus('Archived')" ><i class="fa fa-remove fa-fw"></i> Delete</a>
+      <a tooltip-placement="bottom" tooltip="edit this template" class="btn btn-xs btn-primary" href ui-sref="compliance-form-template.edit({ id: template._id})"><i class="fa fa-pencil-square-o fa-fw"></i> Edit</a>
+      <button class="btn btn-xs btn-primary" ng-click="changeStatus('Released')"><i class="fa fa-share-alt fa-fw"></i> Release</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-show="isLoading">
+  <div class="text-center">
+    <h2>Loading....</h2>
+    <div class="block-spinner"></div>
+  </div>
+</div>
+
+<div class="wrapper wrapper-content" ng-hide="isLoading">
+  <div class="ibox">
+    <div class="ibox-content">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="m-b-md">
+            <h2>{{template.title}}</h2>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <dl class="dl-horizontal">
+            <dt>Status:</dt>
+            <dd> 
+              <strong ng-class="{'text-primary' : template.status === 'Released', 'text-warning' : template.status === 'Draft', 'text-danger' : template.status === 'Archived'}">{{template.status}}</strong>
+            </dd>
+            <dt>Category:</dt>
+            <dd>{{template.category}}</dd>
+            <dt>Org Unit:</dt>
+            <dd>
+              <span>{{template.responsibleOrg.orgName}}</span>
+            </dd>
+            <dt>Resposible Role:</dt>
+            <dd>{{template.responsibleRole}}</dd>
+            <dt>Include child org units</dt>
+            <dd>{{template.includeChildOrgs ? 'YES' : 'NO'}}</dd>
+          </dl>
+        </div>
+        <div class="col-md-6">
+          <dl class="dl-horizontal">
+            <dt>Version:</dt>
+            <dd>{{template.version}}</dd>
+            <dt>Created By: </dt>
+            <dd>{{template.createdBy.givenName}} {{template.createdBy.familyName}}</dd>
+            <dt ng-if="template.updatedBy">Updated By: </dt>
+            <dd ng-if="template.updatedBy">{{template.updatedBy.givenName}} {{template.updatedBy.familyName}}</dd>
+          </dl>
+        </div>
+        <div class="col-lg-12">
+          <dl class="dl-horizontal">
+            <dt>Resposible Users:</dt>
+            <dd><span ng-repeat="user in template.responsibleUsers">{{user.display_name}}({{user._id}}) <span ng-if="!$last">,</span></span></dd>
+          </dl>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <dl class="dl-horizontal">
+            <dt>Description</dt>
+            <dd ng-bind-html="template.description"></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ibox">
+    <div class="ibox-content">
+      <form ng-if="formData">
+        <div ng-model="formData" fb-form="default"></div>
+      </form>
+    </div>
+  </div>
+</div>
