@@ -1,6 +1,10 @@
 ## GRC
 An open source Governance Risk Compliance (GRC) solution for corporates and government
 
+### License
+
+This product is licensed under GPL3 as described in the [license document](LICENSE).
+
 ### Documention
 Coming soon...
 
